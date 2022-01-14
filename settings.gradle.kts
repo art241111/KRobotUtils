@@ -10,4 +10,4 @@ rootProject.name = "KRobotUtils"
 include(":KRobot:tcpClient")
 include(":KRobot:KAS")
 include("KRobot")
-
+include("RXTX")

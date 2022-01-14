@@ -1,18 +1,37 @@
 // Copyright 2000-2021 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import strings.S
+import utils.RXTX
+import utils.rxtxExtensions.getReportData
+import windows.ConnectToBreakChecker
 import windows.RobotConnectionWindow
 
 fun main() = application {
+    val rxtx = remember { RXTX() }
+    val reportNames = remember { mutableStateOf(listOf<String>()) }
+
+    val coroutineScope = rememberCoroutineScope()
+    val listAllowedPorts = remember { mutableStateOf(listOf<String>()) }
+    val isFirstStart = remember { mutableStateOf(true) }
+    if (isFirstStart.value) {
+        isFirstStart.value = false
+        coroutineScope.launch(Dispatchers.IO) {
+            listAllowedPorts.value = rxtx.getAvailableSerialPorts()
+        }
+    }
+
     var isRobotConnecting by remember { mutableStateOf(false) }
     var isBreakCheckerConnecting by remember { mutableStateOf(false) }
 
-    val coroutineScope = rememberCoroutineScope()
     val robot = remember { KRobot(coroutineScope) }
 
     Window(
@@ -34,6 +53,52 @@ fun main() = application {
                     },
                     onBreakCheckerConnect = { isBreakCheckerConnecting = true },
                 )
+
+                Row {
+                    Button(onClick = {
+                        if (!rxtx.isConnect.value) {
+                            isBreakCheckerConnecting = true
+                        } else {
+                            rxtx.disconnect()
+                        }
+                    }) {
+                        Text(if (!rxtx.isConnect.value) "Connect" else "Disconnect")
+                    }
+                }
+
+
+                val selectedRepName = remember { mutableStateOf(0) }
+                LazyColumn {
+                    itemsIndexed(reportNames.value) { index, reportName ->
+                        ui.ListItem(
+                            onClick = {
+                                selectedRepName.value = index
+                            },
+                            text = reportName,
+                            isSelect = index == selectedRepName.value,
+                            onDoubleClick = {
+                                coroutineScope.launch {
+                                    selectedRepName.value = index
+
+                                    val report = rxtx.getReportData(coroutineScope, selectedRepName.value + 1)
+                                    println(report)
+                                }
+                            }
+                        )
+                    }
+                }
+
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            val report = rxtx.getReportData(coroutineScope, selectedRepName.value + 1)
+                            println(report)
+                        }
+                    }
+                ) {
+                    Text("Get report")
+                }
+
             }
         }
     }
@@ -49,7 +114,15 @@ fun main() = application {
         }
 
         isBreakCheckerConnecting -> {
-            // TODO: Break checker connection window
+            ConnectToBreakChecker(
+                onClose = {
+                    isBreakCheckerConnecting = false
+                },
+                listAllowedPorts = listAllowedPorts,
+                coroutineScope = coroutineScope,
+                rxtx = rxtx,
+                reportNames = reportNames
+            )
         }
     }
 }
