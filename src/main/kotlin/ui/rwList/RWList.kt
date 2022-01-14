@@ -48,7 +48,8 @@ fun RWList(
             item {
                 Button(
                     modifier = Modifier.align(Alignment.BottomCenter).padding(15.dp),
-                    onClick = { onSelect(selectIndex.value) }
+                    onClick = { onSelect(selectIndex.value) },
+                    enabled = items.isNotEmpty()
                 ) {
                     Text(buttonText)
                 }

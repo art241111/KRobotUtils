@@ -40,7 +40,7 @@ suspend fun KRobot.loadFileFromRobot(): List<String> {
     send(START_LOAD)
 
     // Reading the program
-    val localJob = coroutineScope.launch {
+    val localJob = coroutineScope.launch (Dispatchers.IO) {
         var line = ""
 
         incomingLetter.collect{ letter ->

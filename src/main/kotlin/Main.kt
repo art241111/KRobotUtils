@@ -9,6 +9,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import data.Report
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import strings.S
@@ -24,6 +25,7 @@ fun main() = application {
     // Init data
     val rxtx = remember { RXTX() }
     val reportNames = remember { mutableStateOf(listOf<String>()) }
+    val reports = remember { mutableStateOf(listOf<Report>()) }
 
     val coroutineScope = rememberCoroutineScope()
     val listAllowedPorts = remember { mutableStateOf(listOf<String>()) }
