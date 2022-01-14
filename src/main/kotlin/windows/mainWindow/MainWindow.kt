@@ -16,6 +16,7 @@ import ui.AppMenuBar
 import ui.RWList
 import utils.RXTX
 import utils.getReportData
+import windows.mainWindow.PrintReportView
 
 @Composable
 fun MainWindow(
@@ -24,6 +25,7 @@ fun MainWindow(
     showBreakCheckerConnectionWindow: () -> Unit,
     rxtx: RXTX,
     robot: KRobot,
+    report: Report?,
 ) {
     Window(
         onCloseRequest = onClose,
@@ -52,6 +54,7 @@ fun MainWindow(
                     breakCheckerStatus = if (!rxtx.isConnect.value) S.strings.connect else S.strings.disconnect
                 )
 
+                PrintReportView(kRobot = robot, report = report)
             }
         }
     }

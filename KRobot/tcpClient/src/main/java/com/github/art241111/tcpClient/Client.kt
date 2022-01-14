@@ -54,7 +54,8 @@ open class Client : Sender {
         timeout: Int = 2000,
         isWriterLogging: Boolean = false,
         isReaderLogging: Boolean = false,
-        defaultMessage: String = ""
+        defaultMessage: String = "",
+        coroutineScope: CoroutineScope
     ) {
         oldAddress = address
         oldPort = port
@@ -62,15 +63,12 @@ open class Client : Sender {
         this.isReaderLogging = isReaderLogging
 
         // When the device connects to the server, it creates Reader and Writer
-        withContext(Dispatchers.IO) {
-            withContext(Dispatchers.IO) {
-                connection.connect(address, port, timeout)
-            }
-
+        coroutineScope.launch(Dispatchers.IO) {
+            connection.connect(address, port, timeout)
             createReaderAndWriter(isWriterLogging, isReaderLogging)
 
             if (defaultMessage.isNotEmpty()) send(defaultMessage)
-        }
+        }.join()
     }
 
     /**

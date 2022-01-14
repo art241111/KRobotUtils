@@ -1,3 +1,4 @@
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 data class Data(
@@ -10,8 +11,8 @@ data class Data(
     val motorOnCounter: Int
 )
 
-suspend fun KRobot.getData(): Data {
-    val backup = loadFileFromRobot()
+suspend fun KRobot.getData(dataReadStatus: MutableStateFlow<String>? = null): Data {
+    val backup = loadFileFromRobot(dataReadStatus)
 
     // OPEINFO - информация о роботе
     var robotType = ""

@@ -6,7 +6,6 @@ import com.github.poluka.kControlLibrary.points.Point
 import com.github.poluka.kControlLibrary.points.Where
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
@@ -34,26 +33,27 @@ class KRobot(
     }
 
     val isConnect: StateFlow<Boolean> = _isConnect
-    fun connect(ip: String, port: Int) {
+    suspend fun connect(ip: String, port: Int, dataReadStatus: MutableStateFlow<String>? = null) {
         this.ip = ip
         this.port = port
 
-        connect()
+        connect(dataReadStatus)
     }
 
-    fun connect() {
+    suspend fun connect(dataReadStatus: MutableStateFlow<String>? = null) {
         println("Connect")
         if (port != 0 && ip != "") {
             // Connect to the robot
-            coroutineScope.launch {
+
                 connect(
                     ip,
                     port,
-                    defaultMessage = "as"
+                    defaultMessage = "as",
+                    coroutineScope = coroutineScope
                 )
 
-                data = getData()
-            }
+                data = getData(dataReadStatus)
+
 
             setConnectStatusHandler()
             setPositionHandler()

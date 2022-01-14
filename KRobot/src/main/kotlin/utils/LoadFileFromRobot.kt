@@ -1,4 +1,5 @@
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import java.io.File
 
@@ -31,7 +32,7 @@ private val STOP_LOAD = charArrayOf(
  *
  * @return List of lines with the robot program.
  */
-suspend fun KRobot.loadFileFromRobot(): List<String> {
+suspend fun KRobot.loadFileFromRobot(dataReadStatus: MutableStateFlow<String>? = null): List<String> {
     val response = mutableListOf<String>()
     // Sending save command
     send("save using.rcc")
@@ -55,6 +56,8 @@ suspend fun KRobot.loadFileFromRobot(): List<String> {
                 } else {
                     // Comment line
                     println(line)
+
+                    if (dataReadStatus != null) dataReadStatus.value = line
                 }
 
                 line = ""
@@ -72,6 +75,9 @@ suspend fun KRobot.loadFileFromRobot(): List<String> {
 
     // Sending end sequence
     send(STOP_LOAD)
+
+    // Clean return line
+    if (dataReadStatus != null) dataReadStatus.value = ""
 
     // Delete first string
     // (Busing.rcc Saving...(using.rcc))
