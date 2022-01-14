@@ -14,11 +14,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.rememberWindowState
+import data.Report
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import strings.S
 import ui.RWList
+import ui.rwList.ListWithProgressBar
 import utils.RXTX
+import utils.getReportData
 import utils.getReportNames
 
 @Composable
@@ -27,7 +30,8 @@ fun ConnectToBreakChecker(
     coroutineScope: CoroutineScope,
     rxtx: RXTX,
     reportNames: MutableState<List<String>>,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    reports: MutableState<Report?>
 ) {
     Window(
         onCloseRequest = { onClose() },
@@ -46,21 +50,24 @@ fun ConnectToBreakChecker(
 
             Spacer(Modifier.height(10.dp))
 
-            if (listAllowedPorts.value.isEmpty()) {
-                CircularProgressIndicator()
-            }
-
-            RWList(
-                items = listAllowedPorts.value,
-                onSelect = { index ->
+            if (!rxtx.isConnect.value) {
+                // Output a list of ports
+                ListWithProgressBar(listAllowedPorts.value, S.strings.connect) { index ->
                     coroutineScope.launch {
                         rxtx.connect(listAllowedPorts.value[index], coroutineScope)
                         reportNames.value = rxtx.getReportNames()
-                        onClose()
                     }
-                },
-                buttonText = S.strings.connect
-            )
+                }
+            } else {
+                ListWithProgressBar(reportNames.value, S.strings.getReport) { index ->
+                    coroutineScope.launch {
+                        onClose()
+                        val report = rxtx.getReportData(coroutineScope, index + 1)
+                        reports.value = report
+                        println(report)
+                    }
+                }
+            }
         }
     }
 }

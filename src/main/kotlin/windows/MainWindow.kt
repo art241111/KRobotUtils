@@ -4,9 +4,11 @@ import KRobot
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.rememberWindowState
+import data.Report
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import strings.S
@@ -22,8 +24,6 @@ fun MainWindow(
     showBreakCheckerConnectionWindow: () -> Unit,
     rxtx: RXTX,
     robot: KRobot,
-    reportNames: List<String>,
-    coroutineScope: CoroutineScope
 ) {
     Window(
         onCloseRequest = onClose,
@@ -52,16 +52,6 @@ fun MainWindow(
                     breakCheckerStatus = if (!rxtx.isConnect.value) S.strings.connect else S.strings.disconnect
                 )
 
-                RWList(
-                    items = reportNames,
-                    onSelect = { index ->
-                        coroutineScope.launch {
-                            val report = rxtx.getReportData(coroutineScope, index + 1)
-                            println(report)
-                        }
-                    },
-                    buttonText = "Get report"
-                )
             }
         }
     }

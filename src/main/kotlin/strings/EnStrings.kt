@@ -19,4 +19,5 @@ class EnStrings : Strings {
     // Break checker connect
     override val breakCheckerWindowName = "Connect to break check"
     override val listAcceptablePorts = "List of acceptable COM ports"
+    override val getReport = "Get report"
 }

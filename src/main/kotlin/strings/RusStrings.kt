@@ -19,4 +19,5 @@ class RusStrings : Strings {
     // Break checker connect
     override val breakCheckerWindowName = "Подключение к Break Checker"
     override val listAcceptablePorts = "Список допустимых COM портов"
+    override val getReport = "Загрузка отчета"
 }

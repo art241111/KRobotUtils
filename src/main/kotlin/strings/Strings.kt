@@ -19,4 +19,5 @@ interface Strings {
    // Break checker connect
    val breakCheckerWindowName: String
    val listAcceptablePorts: String
+   val getReport: String
 }
