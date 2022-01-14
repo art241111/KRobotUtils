@@ -8,6 +8,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -50,7 +51,8 @@ fun ConnectToBreakChecker(
 
             Spacer(Modifier.height(10.dp))
 
-            if (!rxtx.isConnect.value) {
+            val isConnect = rxtx.isConnect.collectAsState()
+            if (!isConnect.value) {
                 // Output a list of ports
                 ListWithProgressBar(listAllowedPorts.value, S.strings.connect) { index ->
                     coroutineScope.launch {
