@@ -1,6 +1,7 @@
 package utils
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.WindowScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -17,10 +18,11 @@ class Dialog {
 
 @OptIn(DelicateCoroutinesApi::class)
 @Composable
-fun WindowScope.DialogFile(
-    mode:Dialog.Mode = Dialog.Mode.LOAD,
-    title:String = "Choisissez un fichier",
-    extensions:List<FileNameExtensionFilter> = listOf(),
+fun DialogFile(
+    mode: Dialog.Mode = Dialog.Mode.LOAD,
+    title: String = "Choisissez un fichier",
+    extensions: List<FileNameExtensionFilter> = listOf(),
+    scope: FrameWindowScope,
     onResult: (files: List<File>) -> Unit
 ) {
     DisposableEffect(Unit) {
@@ -32,9 +34,9 @@ fun WindowScope.DialogFile(
             extensions.forEach { fileChooser.addChoosableFileFilter(it) }
 
             val returned = if(mode == Dialog.Mode.LOAD) {
-                fileChooser.showOpenDialog(window)
+                fileChooser.showOpenDialog(scope.window)
             } else {
-                fileChooser.showSaveDialog(window)
+                fileChooser.showSaveDialog(scope.window)
             }
 
             onResult(when(returned) {

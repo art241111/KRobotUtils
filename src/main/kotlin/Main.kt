@@ -1,9 +1,9 @@
 // Copyright 2000-2021 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import data.Report
@@ -19,7 +19,6 @@ import utils.RXTX
 import windows.ConnectToBreakChecker
 import windows.MainWindow
 import windows.RobotConnectionWindow
-import java.io.File
 import javax.swing.UIManager
 import javax.swing.filechooser.FileNameExtensionFilter
 
@@ -44,8 +43,8 @@ fun main() {
 
         val isRobotConnecting = remember { mutableStateOf(false) }
         val isBreakCheckerConnecting = remember { mutableStateOf(false) }
-        val isKRSDSave = remember { mutableStateOf(false) }
-        val isKRSDLoad = remember { mutableStateOf(false) }
+        val isKRSDSave = remember { mutableStateOf<FrameWindowScope?>(null) }
+        val isKRSDLoad = remember { mutableStateOf<FrameWindowScope?>(null) }
 
         val robot = remember { KRobot(coroutineScope) }
 
@@ -61,8 +60,8 @@ fun main() {
             rxtx = rxtx,
             robot = robot,
             report = report.value,
-            onSave = {
-                isKRSDSave.value = true
+            onSave = { scope ->
+                isKRSDSave.value = scope
 //                coroutineScope.launch(Dispatchers.IO) {
 //                    var string = ""
 //                    if (report.value != null) {
@@ -80,7 +79,7 @@ fun main() {
 //                }
             },
             onLoad = {
-                isKRSDLoad.value = true
+                isKRSDLoad.value = it
 //                val str =
 //                    File("C:\\Users\\Artem\\IdeaProjects\\KRobotUtils\\src\\main\\resources\\fileName.krsd").readText(
 //                        Charsets.UTF_8
@@ -120,50 +119,44 @@ fun main() {
                 )
             }
 
-            isKRSDSave.value -> {
-                Window(
-                    onCloseRequest = {isKRSDSave.value = false },
-                ) {
-                    DialogFile(
-                        mode = Dialog.Mode.SAVE,
-                        title = "Save KRSD File",
-                        extensions = listOf(FileNameExtensionFilter("KRSD Files", "krsd"))
-                    ) { filesDirect ->
-                        coroutineScope.launch(Dispatchers.IO) {
-                            var string = ""
-                            if (report.value != null) {
-                                string += Json.encodeToString(report.value)
-                            }
-
-                            string += "\n----------------------------------\n"
-
-                            if (robot.data != null) {
-                                string += Json.encodeToString(robot.data)
-                            }
-
-                            filesDirect[0].bufferedWriter().use { out -> out.write(string) }
-                            isKRSDSave.value = false
+            isKRSDSave.value != null -> {
+                DialogFile(
+                    mode = Dialog.Mode.SAVE,
+                    title = "Save KRSD File",
+                    extensions = listOf(FileNameExtensionFilter("KRSD Files", "krsd")),
+                    scope = isKRSDSave.value!!
+                ) { filesDirect ->
+                    coroutineScope.launch(Dispatchers.IO) {
+                        var string = ""
+                        if (report.value != null) {
+                            string += Json.encodeToString(report.value)
                         }
+
+                        string += "\n----------------------------------\n"
+
+                        if (robot.data != null) {
+                            string += Json.encodeToString(robot.data)
+                        }
+
+                        filesDirect[0].bufferedWriter().use { out -> out.write(string) }
+                        isKRSDSave.value = null
                     }
                 }
             }
 
-            isKRSDLoad.value -> {
-                Window(
-                    onCloseRequest = { isKRSDLoad.value = false },
-                ) {
-                    DialogFile(
-                        mode = Dialog.Mode.LOAD,
-                        title = "Load KRSD File",
-                        extensions = listOf(FileNameExtensionFilter("KRSD Files", "krsd"))
-                    ) { filesDirect ->
-                        val str = filesDirect[0].readText(Charsets.UTF_8)
-                        val splt = str.split("----------------------------------")
-                        report.value = Json.decodeFromString<Report>(splt[0])
-                        robot.data = Json.decodeFromString<Data>(splt[1])
-                        isKRSDLoad.value = false
-                    }
+            isKRSDLoad.value != null -> {
+                DialogFile(
+                    mode = Dialog.Mode.LOAD,
+                    title = "Load KRSD File",
+                    extensions = listOf(FileNameExtensionFilter("KRSD Files", "krsd")),
+                    scope = isKRSDLoad.value!!
+                ) { filesDirect ->
+                    val str = filesDirect[0].readText(Charsets.UTF_8)
+                    val splt = str.split("----------------------------------")
+                    report.value = Json.decodeFromString<Report>(splt[0])
+                    robot.data = Json.decodeFromString<Data>(splt[1])
                 }
+                isKRSDLoad.value = null
             }
         }
 

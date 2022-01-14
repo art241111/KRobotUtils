@@ -6,6 +6,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.rememberWindowState
 import data.Report
@@ -26,20 +27,20 @@ fun MainWindow(
     rxtx: RXTX,
     robot: KRobot,
     report: Report?,
-    onSave: () -> Unit,
-    onLoad: () -> Unit,
+    onSave: (FrameWindowScope) -> Unit,
+    onLoad: (FrameWindowScope) -> Unit,
 ) = Window(
     onCloseRequest = onClose,
     title = S.strings.title,
     state = rememberWindowState(width = 900.dp, height = 600.dp)
 ) {
-
+    val scope = this
     MaterialTheme {
         Column {
             AppMenuBar(
-                onLoad = onLoad,
+                onLoad = { onLoad(scope) },
                 onSave = {
-                    onSave()
+                    onSave(scope)
                 },
                 onRobotConnect = {
                     if (robot.isConnect.value) {
