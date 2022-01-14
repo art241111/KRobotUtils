@@ -62,31 +62,9 @@ fun main() {
             report = report.value,
             onSave = { scope ->
                 isKRSDSave.value = scope
-//                coroutineScope.launch(Dispatchers.IO) {
-//                    var string = ""
-//                    if (report.value != null) {
-//                        string += Json.encodeToString(report.value)
-//                    }
-//
-//                    string += "\n----------------------------------\n"
-//
-//                    if (robot.data != null) {
-//                        string += Json.encodeToString(robot.data)
-//                    }
-//
-//                    File("C:\\Users\\Artem\\IdeaProjects\\KRobotUtils\\src\\main\\resources\\fileName.krsd").bufferedWriter()
-//                        .use { out -> out.write(string) }
-//                }
             },
-            onLoad = {
-                isKRSDLoad.value = it
-//                val str =
-//                    File("C:\\Users\\Artem\\IdeaProjects\\KRobotUtils\\src\\main\\resources\\fileName.krsd").readText(
-//                        Charsets.UTF_8
-//                    )
-//                val splt = str.split("----------------------------------")
-//                report.value = Json.decodeFromString<Report>(splt[0])
-//                robot.data = Json.decodeFromString<Data>(splt[1])
+            onLoad = { scope ->
+                isKRSDLoad.value = scope
             }
         )
 
