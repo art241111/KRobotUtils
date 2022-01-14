@@ -5,6 +5,7 @@ class EnStrings : Strings {
 
     // Menu bar
     override val connect = "Connect"
+    override val disconnect = "Disconnect"
     override val toRobot = "Robot"
     override val toBreakChecker = "Break checker"
     override val file = "File"

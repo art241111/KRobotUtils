@@ -5,6 +5,7 @@ interface Strings {
 
    // Menu bar
    val connect: String
+   val disconnect: String
    val toRobot: String
    val toBreakChecker: String
    val file: String

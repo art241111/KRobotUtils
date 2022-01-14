@@ -5,6 +5,7 @@ class RusStrings : Strings {
 
     // Menu bar
     override val connect = "Подключение"
+    override val disconnect = "Отключение"
     override val toRobot = "Робот"
     override val toBreakChecker = "Break checker"
     override val file = "Файл"
