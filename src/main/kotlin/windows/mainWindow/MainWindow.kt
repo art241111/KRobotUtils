@@ -28,39 +28,37 @@ fun MainWindow(
     report: Report?,
     onSave: () -> Unit,
     onLoad: () -> Unit,
+) = Window(
+    onCloseRequest = onClose,
+    title = S.strings.title,
+    state = rememberWindowState(width = 900.dp, height = 600.dp)
 ) {
-    Window(
-        onCloseRequest = onClose,
-        title = S.strings.title,
-        state = rememberWindowState(width = 900.dp, height = 600.dp)
-    ) {
 
-        MaterialTheme {
-            Column {
-                AppMenuBar(
-                    onLoad = onLoad,
-                    onSave = {
-                        onSave()
-                    },
-                    onRobotConnect = {
-                        if (robot.isConnect.value) {
-                            robot.disconnect()
-                        } else {
-                            showRobotConnectionWindow()
-                        }
-                    },
-                    onBreakCheckerConnect = {
-                        if (!rxtx.isConnect.value) {
-                            showBreakCheckerConnectionWindow()
-                        } else {
-                            rxtx.disconnect()
-                        }
-                    },
-                    breakCheckerStatus = if (!rxtx.isConnect.value) S.strings.connect else S.strings.disconnect
-                )
+    MaterialTheme {
+        Column {
+            AppMenuBar(
+                onLoad = onLoad,
+                onSave = {
+                    onSave()
+                },
+                onRobotConnect = {
+                    if (robot.isConnect.value) {
+                        robot.disconnect()
+                    } else {
+                        showRobotConnectionWindow()
+                    }
+                },
+                onBreakCheckerConnect = {
+                    if (!rxtx.isConnect.value) {
+                        showBreakCheckerConnectionWindow()
+                    } else {
+                        rxtx.disconnect()
+                    }
+                },
+                breakCheckerStatus = if (!rxtx.isConnect.value) S.strings.connect else S.strings.disconnect
+            )
 
-                PrintReportView(kRobot = robot, report = report)
-            }
+            PrintReportView(kRobot = robot, report = report)
         }
     }
 }
