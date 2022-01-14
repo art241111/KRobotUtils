@@ -1,5 +1,7 @@
 package data
 
+import data.reportJT.ReportJT
+
 class Report (
     val checkerNo: Int? = null,
     val softwareVersion: String = "-",

@@ -1,12 +1,12 @@
 package utils.rxtxExtensions
 
 
-import data.AttractingVolts
-import data.BrakeResistance
-import data.ReleasingVolts
+import data.reportJT.AttractingVolts
+import data.reportJT.BrakeResistance
+import data.reportJT.ReleasingVolts
 import data.Report
-import data.ReportJT
-import data.ResistanceLine
+import data.reportJT.ReportJT
+import data.reportJT.ResistanceLine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import utils.RXTX
