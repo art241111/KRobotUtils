@@ -14,7 +14,7 @@ import androidx.compose.ui.window.rememberWindowState
 import strings.S
 
 @Composable
-fun ApplicationScope.RobotConnectionWindow (
+fun RobotConnectionWindow (
     onCloseRequest: () -> Unit,
     onConnect: (ip: String, port: Int) -> Unit,
 ) {

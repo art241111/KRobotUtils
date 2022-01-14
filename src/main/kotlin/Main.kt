@@ -1,15 +1,19 @@
 // Copyright 2000-2021 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.ExperimentalComposeUiApi
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.*
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.application
+import androidx.compose.ui.window.rememberWindowState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import nav.Navigation
 import strings.S
+import ui.AppMenuBar
 import ui.RWList
 import utils.RXTX
 import utils.getReportData
@@ -30,8 +34,8 @@ fun main() = application {
         }
     }
 
-    var isRobotConnecting by remember { mutableStateOf(false) }
-    var isBreakCheckerConnecting by remember { mutableStateOf(false) }
+    val isRobotConnecting = remember { mutableStateOf(false) }
+    val isBreakCheckerConnecting = remember { mutableStateOf(false) }
 
     val robot = remember { KRobot(coroutineScope) }
 
@@ -46,27 +50,21 @@ fun main() = application {
                 AppMenuBar(
                     onSave = {},
                     onRobotConnect = {
-                        if (isRobotConnecting) {
+                        if (isRobotConnecting.value) {
                             robot.disconnect()
                         } else {
-                            isRobotConnecting = true
+                            isRobotConnecting.value = true
                         }
                     },
-                    onBreakCheckerConnect = { isBreakCheckerConnecting = true },
-                )
-
-                Row {
-                    Button(onClick = {
+                    onBreakCheckerConnect = {
                         if (!rxtx.isConnect.value) {
-                            isBreakCheckerConnecting = true
+                            isBreakCheckerConnecting.value = true
                         } else {
                             rxtx.disconnect()
                         }
-                    }) {
-                        Text(if (!rxtx.isConnect.value) "Connect" else "Disconnect")
-                    }
-                }
-
+                    },
+                    breakCheckerStatus = if (!rxtx.isConnect.value) S.strings.connect else S.strings.disconnect
+                )
 
                 RWList(
                     items = reportNames.value,
@@ -78,56 +76,24 @@ fun main() = application {
                     },
                     buttonText = "Get report"
                 )
-//                val selectedRepName = remember { mutableStateOf(0) }
-//                LazyColumn {
-//                    itemsIndexed(reportNames.value) { index, reportName ->
-//                        ui.ListItem(
-//                            onClick = {
-//                                selectedRepName.value = index
-//                            },
-//                            text = reportName,
-//                            isSelect = index == selectedRepName.value,
-//                            onDoubleClick = {
-//                                coroutineScope.launch {
-//                                    selectedRepName.value = index
-//
-//                                    val report = rxtx.getReportData(coroutineScope, selectedRepName.value + 1)
-//                                    println(report)
-//                                }
-//                            }
-//                        )
-//                    }
-//                }
-//
-//                Button(
-//                    onClick = {
-//                        coroutineScope.launch {
-//                            val report = rxtx.getReportData(coroutineScope, selectedRepName.value + 1)
-//                            println(report)
-//                        }
-//                    }
-//                ) {
-//                    Text("Get report")
-//                }
-
             }
         }
     }
 
     when {
-        isRobotConnecting -> {
+        isRobotConnecting.value -> {
             RobotConnectionWindow(
-                onCloseRequest = { isRobotConnecting = false },
+                onCloseRequest = { isRobotConnecting.value = false },
                 onConnect = { ip, port ->
                     robot.connect(ip, port)
                 }
             )
         }
 
-        isBreakCheckerConnecting -> {
+        isBreakCheckerConnecting.value -> {
             ConnectToBreakChecker(
                 onClose = {
-                    isBreakCheckerConnecting = false
+                    isBreakCheckerConnecting.value = false
                 },
                 listAllowedPorts = listAllowedPorts,
                 coroutineScope = coroutineScope,
@@ -136,62 +102,5 @@ fun main() = application {
             )
         }
     }
-}
-
-@OptIn(ExperimentalComposeUiApi::class)
-@Composable
-fun AppMenuBar(
-    onSave: () -> Unit,
-    onRobotConnect: () -> Unit,
-    onBreakCheckerConnect: () -> Unit,
-) {
-    Row {
-        MenuBarItem(
-            text = S.strings.save,
-            onClick = onSave
-        )
-
-        MenuBarItem(
-            text = S.strings.toRobot,
-            onClick = onRobotConnect
-        )
-
-        MenuBarItem(
-            text = S.strings.toBreakChecker,
-            onClick = onBreakCheckerConnect
-        )
-    }
-}
-
-/**
- *
- * Without the content parameter, the menu becomes a simple button.
- */
-@Composable
-private fun MenuBarItem(
-    text: String = "",
-    onClick: () -> Unit = {},
-    content: @Composable ColumnScope.() -> Unit = {},
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    Box {
-        Button(onClick = {
-            onClick()
-            expanded = !expanded
-        }) {
-            Text(text)
-        }
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = {
-                expanded = !expanded
-            }
-        ) {
-            content()
-        }
-    }
-
 
 }
