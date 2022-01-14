@@ -14,4 +14,8 @@ class RusStrings : Strings {
     // Robot connection
     override val enterIp = "Введите Ip"
     override val enterPort = "Введите порт"
+
+    // Break checker connect
+    override val breakCheckerWindowName = "Подключение к Break Checker"
+    override val listAcceptablePorts = "Список допустимых COM портов"
 }

@@ -27,6 +27,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.rememberWindowState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import strings.S
 import ui.ListItem
 import utils.RXTX
 import utils.getReportNames
@@ -43,7 +44,7 @@ fun ConnectToBreakChecker(
         onCloseRequest = { onClose() },
         state = rememberWindowState(width = 300.dp, height = 400.dp),
         resizable = false,
-        title = "Connect to break checker"
+        title = S.strings.breakCheckerWindowName
     ) {
         val selectIndex = remember { mutableStateOf(0) }
         val stateVertical = rememberScrollState(0)
@@ -63,7 +64,7 @@ fun ConnectToBreakChecker(
             ) {
                 Spacer(Modifier.height(10.dp))
                 Text(
-                    text = "Список допустимых COM портов",
+                    text = S.strings.listAcceptablePorts,
                     textAlign = TextAlign.Center
                 )
 
@@ -88,7 +89,7 @@ fun ConnectToBreakChecker(
                 Spacer(Modifier.height(10.dp))
 
                 Button(onClick = { onSelect() }) {
-                    Text("Connect")
+                    Text(S.strings.connect)
                 }
 
                 Spacer(Modifier.height(10.dp))

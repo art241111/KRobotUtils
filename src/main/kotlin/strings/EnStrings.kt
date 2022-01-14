@@ -14,4 +14,8 @@ class EnStrings : Strings {
     // Robot connection
     override val enterIp = "Enter Ip"
     override val enterPort = "Enter port"
+
+    // Break checker connect
+    override val breakCheckerWindowName = "Connect to break check"
+    override val listAcceptablePorts = "List of acceptable COM ports"
 }

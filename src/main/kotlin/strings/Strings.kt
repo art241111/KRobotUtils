@@ -14,4 +14,8 @@ interface Strings {
    // Robot connection
    val enterIp: String
    val enterPort: String
+
+   // Break checker connect
+   val breakCheckerWindowName: String
+   val listAcceptablePorts: String
 }
