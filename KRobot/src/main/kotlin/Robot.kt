@@ -23,7 +23,6 @@ class KRobot(
     val position: StateFlow<Point> = _position
 
     var data: Data? = null
-        private set
 
     /**
      * Update position

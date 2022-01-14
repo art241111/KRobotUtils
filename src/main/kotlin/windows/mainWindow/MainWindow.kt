@@ -26,6 +26,8 @@ fun MainWindow(
     rxtx: RXTX,
     robot: KRobot,
     report: Report?,
+    onSave: () -> Unit,
+    onLoad: () -> Unit,
 ) {
     Window(
         onCloseRequest = onClose,
@@ -36,7 +38,10 @@ fun MainWindow(
         MaterialTheme {
             Column {
                 AppMenuBar(
-                    onSave = {},
+                    onLoad = onLoad,
+                    onSave = {
+                        onSave()
+                    },
                     onRobotConnect = {
                         if (robot.isConnect.value) {
                             robot.disconnect()

@@ -9,6 +9,7 @@ import strings.S
 @Composable
 fun AppMenuBar(
     onSave: () -> Unit,
+    onLoad: () -> Unit,
     onRobotConnect: () -> Unit,
     onBreakCheckerConnect: () -> Unit,
     breakCheckerStatus: String,
@@ -17,6 +18,11 @@ fun AppMenuBar(
         MenuBarItem(
             text = S.strings.save,
             onClick = onSave
+        )
+
+        MenuBarItem(
+            text = "Загрузить",
+            onClick = onLoad
         )
 
         MenuBarItem(

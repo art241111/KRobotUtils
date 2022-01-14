@@ -9,10 +9,14 @@ import data.Report
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import utils.RXTX
 import windows.ConnectToBreakChecker
 import windows.MainWindow
 import windows.RobotConnectionWindow
+import java.io.File
 
 fun main() = application {
     // Init data
@@ -46,7 +50,29 @@ fun main() = application {
         },
         rxtx = rxtx,
         robot = robot,
-        report = report.value
+        report = report.value,
+        onSave = {
+            coroutineScope.launch(Dispatchers.IO) {
+                var string = ""
+                if (report.value != null) {
+                    string += Json.encodeToString(report.value)
+                }
+
+                string += "\n----------------------------------\n"
+
+                if (robot.data != null) {
+                    string += Json.encodeToString(robot.data)
+                }
+
+                File("C:\\Users\\artem_admin\\IdeaProjects\\KRobotUtils\\src\\main\\resources\\fileName.txt").bufferedWriter().use { out -> out.write(string) }
+            }
+        },
+        onLoad = {
+            val str = File("C:\\Users\\artem_admin\\IdeaProjects\\KRobotUtils\\src\\main\\resources\\fileName.txt").readText(Charsets.UTF_8)
+            val splt = str.split("\n----------------------------------\n")
+            report.value = Json.decodeFromString<Report>(splt[0])
+            robot.data = Json.decodeFromString<Data>(splt[1])
+        }
     )
 
     val dataReadStatus = remember { MutableStateFlow("") }
@@ -57,7 +83,7 @@ fun main() = application {
                 dataReadStatus = dataReadStatus,
                 onClose = { isRobotConnecting.value = false },
                 onConnect = { ip, port ->
-                    coroutineScope.launch (Dispatchers.IO) {
+                    coroutineScope.launch(Dispatchers.IO) {
                         robot.connect(ip, port, dataReadStatus)
                         isRobotConnecting.value = false
                     }

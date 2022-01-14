@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm")
+    kotlin("plugin.serialization")
     java
 }
 
@@ -15,4 +16,6 @@ dependencies {
     implementation(project("KAS"))
     implementation(project("tcpClient"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
 }

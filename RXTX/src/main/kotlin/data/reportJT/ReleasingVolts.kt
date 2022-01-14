@@ -1,6 +1,9 @@
 package data.reportJT
 
-class ReleasingVolts(
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class ReleasingVolts(
     val measureData: List<Double?>,
     val meanData: Double?,
     val voltStandard: Double?,

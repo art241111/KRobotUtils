@@ -5,6 +5,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") version "1.6.10"
     id("org.jetbrains.compose") version "1.0.1-rc2"
+    kotlin("plugin.serialization") version "1.6.10"
 }
 
 group = "ru.gerasimov"
@@ -24,6 +25,8 @@ dependencies {
     implementation(project(":KRobot:tcpClient"))
 
     implementation(project(":RXTX"))
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
 }
 
 tasks.withType<KotlinCompile>() {

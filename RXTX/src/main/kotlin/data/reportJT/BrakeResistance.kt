@@ -1,6 +1,9 @@
 package data.reportJT
 
-class BrakeResistance(
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class BrakeResistance(
     val measureData: Double,
     val voltStandard: Double,
     val judgeResult: String = ""

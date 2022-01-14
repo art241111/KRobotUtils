@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm")
     java
+    kotlin("plugin.serialization")
 }
 
 group = "ru.gerasimov"
@@ -19,6 +20,8 @@ dependencies {
     implementation("com.neuronrobotics:nrjavaserial:5.1.1")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
 }
 
 tasks.getByName<Test>("test") {

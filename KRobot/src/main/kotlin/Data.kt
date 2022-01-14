@@ -1,6 +1,9 @@
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Data(
     val backup: List<String>,
     val robotType: String,

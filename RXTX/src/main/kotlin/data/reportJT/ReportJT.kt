@@ -1,12 +1,16 @@
 package data.reportJT
 
-class ReportJT(
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class ReportJT(
     var resistance: List<ResistanceLine>,
     val brakeVoltMeasuringTime: Int?,
     val attractingVolts: AttractingVolts,
     val releasingVolts: ReleasingVolts,
     val brakeResistance: BrakeResistance,
-) {
+)
+{
     override fun toString(): String {
         var ret = ""
         resistance.forEach {

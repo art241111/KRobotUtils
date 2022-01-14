@@ -1,15 +1,17 @@
 package data
 
 import data.reportJT.ReportJT
+import kotlinx.serialization.Serializable
 
-class Report (
+@Serializable
+class Report(
     val checkerNo: Int? = null,
     val softwareVersion: String = "-",
     val machineType: String = "-",
     val separateHarness: Int? = null,
     val measuredOhmJudge: Int? = null,
     val reportsJT: List<ReportJT>
-){
+) {
     override fun toString(): String {
         return "Checker No: $checkerNo \n" +
                 "SoftwareVersion: $softwareVersion\n" +
