@@ -11,16 +11,17 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import nav.Navigation
 import strings.S
 import ui.AppMenuBar
 import ui.RWList
 import utils.RXTX
 import utils.getReportData
 import windows.ConnectToBreakChecker
+import windows.MainWindow
 import windows.RobotConnectionWindow
 
 fun main() = application {
+    // Init data
     val rxtx = remember { RXTX() }
     val reportNames = remember { mutableStateOf(listOf<String>()) }
 
@@ -39,47 +40,22 @@ fun main() = application {
 
     val robot = remember { KRobot(coroutineScope) }
 
-    Window(
-        onCloseRequest = ::exitApplication,
-        title = S.strings.title,
-        state = rememberWindowState(width = 900.dp, height = 600.dp)
-    ) {
-
-        MaterialTheme {
-            Column {
-                AppMenuBar(
-                    onSave = {},
-                    onRobotConnect = {
-                        if (isRobotConnecting.value) {
-                            robot.disconnect()
-                        } else {
-                            isRobotConnecting.value = true
-                        }
-                    },
-                    onBreakCheckerConnect = {
-                        if (!rxtx.isConnect.value) {
-                            isBreakCheckerConnecting.value = true
-                        } else {
-                            rxtx.disconnect()
-                        }
-                    },
-                    breakCheckerStatus = if (!rxtx.isConnect.value) S.strings.connect else S.strings.disconnect
-                )
-
-                RWList(
-                    items = reportNames.value,
-                    onSelect = { index ->
-                        coroutineScope.launch {
-                            val report = rxtx.getReportData(coroutineScope, index + 1)
-                            println(report)
-                        }
-                    },
-                    buttonText = "Get report"
-                )
-            }
+    // Main window
+    MainWindow(
+        onClose = ::exitApplication,
+        rxtx = rxtx,
+        robot = robot,
+        coroutineScope = coroutineScope,
+        reportNames = reportNames.value,
+        showRobotConnectionWindow = {
+            isRobotConnecting.value = true
+        },
+        showBreakCheckerConnectionWindow = {
+            isBreakCheckerConnecting.value = true
         }
-    }
+    )
 
+    // Navigation
     when {
         isRobotConnecting.value -> {
             RobotConnectionWindow(
