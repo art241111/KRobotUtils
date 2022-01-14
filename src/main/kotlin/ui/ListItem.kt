@@ -1,12 +1,15 @@
 package ui
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
+import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -26,23 +29,25 @@ fun ListItem(
 ) {
     val selectedColor = Color.LightGray
     val notSelectedColor = Color.White
-    Box(
+    Card(
         modifier = modifier
-            .pointerInput (Unit) {
-               this.detectTapGestures(
-                   onPress = {
-                       onClick()
-                   },
-                   onDoubleTap = {
-                       onDoubleClick()
-                   }
-               )
+            .pointerInput(Unit) {
+                this.detectTapGestures(
+                    onPress = {
+                        onClick()
+                    },
+                    onDoubleTap = {
+                        onDoubleClick()
+                    }
+                )
             }
-            .shadow(5.dp)
-            .background(if (isSelect) selectedColor else notSelectedColor)
-            .padding(10.dp)
-            .fillMaxWidth()
+            .fillMaxWidth(),
+        backgroundColor = if (isSelect) selectedColor else notSelectedColor,
+//        border = BorderStroke(1.dp, Color.Gray),
     ) {
-        Text(text)
+        Text(
+            modifier = Modifier.padding(10.dp),
+            text = text
+        )
     }
 }

@@ -10,6 +10,7 @@ import androidx.compose.ui.window.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import strings.S
+import ui.RWList
 import utils.RXTX
 import utils.getReportData
 import windows.ConnectToBreakChecker
@@ -67,37 +68,47 @@ fun main() = application {
                 }
 
 
-                val selectedRepName = remember { mutableStateOf(0) }
-                LazyColumn {
-                    itemsIndexed(reportNames.value) { index, reportName ->
-                        ui.ListItem(
-                            onClick = {
-                                selectedRepName.value = index
-                            },
-                            text = reportName,
-                            isSelect = index == selectedRepName.value,
-                            onDoubleClick = {
-                                coroutineScope.launch {
-                                    selectedRepName.value = index
-
-                                    val report = rxtx.getReportData(coroutineScope, selectedRepName.value + 1)
-                                    println(report)
-                                }
-                            }
-                        )
-                    }
-                }
-
-                Button(
-                    onClick = {
+                RWList(
+                    items = reportNames.value,
+                    onSelect = { index ->
                         coroutineScope.launch {
-                            val report = rxtx.getReportData(coroutineScope, selectedRepName.value + 1)
+                            val report = rxtx.getReportData(coroutineScope, index + 1)
                             println(report)
                         }
-                    }
-                ) {
-                    Text("Get report")
-                }
+                    },
+                    buttonText = "Get report"
+                )
+//                val selectedRepName = remember { mutableStateOf(0) }
+//                LazyColumn {
+//                    itemsIndexed(reportNames.value) { index, reportName ->
+//                        ui.ListItem(
+//                            onClick = {
+//                                selectedRepName.value = index
+//                            },
+//                            text = reportName,
+//                            isSelect = index == selectedRepName.value,
+//                            onDoubleClick = {
+//                                coroutineScope.launch {
+//                                    selectedRepName.value = index
+//
+//                                    val report = rxtx.getReportData(coroutineScope, selectedRepName.value + 1)
+//                                    println(report)
+//                                }
+//                            }
+//                        )
+//                    }
+//                }
+//
+//                Button(
+//                    onClick = {
+//                        coroutineScope.launch {
+//                            val report = rxtx.getReportData(coroutineScope, selectedRepName.value + 1)
+//                            println(report)
+//                        }
+//                    }
+//                ) {
+//                    Text("Get report")
+//                }
 
             }
         }
