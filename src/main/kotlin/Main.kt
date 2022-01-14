@@ -11,7 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import strings.S
 import utils.RXTX
-import utils.rxtxExtensions.getReportData
+import utils.getReportData
 import windows.ConnectToBreakChecker
 import windows.RobotConnectionWindow
 

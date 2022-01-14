@@ -1,9 +1,4 @@
-package utils.rxtxExtensions
-
-import kotlinx.coroutines.CoroutineScope
-import utils.RXTX
-import utils.codeToStr
-import utils.toThreeNumbers
+package utils
 
 /**
  * Get report names from Break Checker.
@@ -21,7 +16,7 @@ suspend fun RXTX.getReportNames(): List<String> {
 
     for (i in 1..50) {
         //serialConnector.send("${header}0${i}098007")
-        val request = "$header${(i * 10).toThreeNumbers()}$getName$footer"
+        val request = "$header${(i * 10).toString().padStart(3,'0')}$getName$footer"
         reportNames.add(sendWithCallBack(request).codeToStr())
     }
 

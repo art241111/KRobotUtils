@@ -1,21 +1,14 @@
-package utils.rxtxExtensions
+package utils
 
 
+import data.Report
 import data.reportJT.AttractingVolts
 import data.reportJT.BrakeResistance
 import data.reportJT.ReleasingVolts
-import data.Report
 import data.reportJT.ReportJT
 import data.reportJT.ResistanceLine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import utils.RXTX
-import utils.codeToInt
-import utils.codeToIntWithCheck
-import utils.codeToJudgeResult
-import utils.codeToLong
-import utils.codeToLongWithCheck
-import utils.getString
 
 suspend fun RXTX.getReportData(coroutineScope: CoroutineScope, reportNumber: Int): Report {
     // Send requests to get the reports data
@@ -78,7 +71,8 @@ private suspend fun RXTX.getResistance(reportNumber: Int, axesNumber: Int): List
         resistances.add(
             ResistanceLine(
                 measureData = measureData.codeToLongWithCheck()?.div(1000.0),
-                resistanceStandard = if ((j < 12) || (axesNumber == 0)) resistanceStandard.codeToLongWithCheck()?.div(1000.0) else null,
+                resistanceStandard = if ((j < 12) || (axesNumber == 0)) resistanceStandard.codeToLongWithCheck()
+                    ?.div(1000.0) else null,
                 judgeResult = judgeResult.codeToJudgeResult()
             )
         )
