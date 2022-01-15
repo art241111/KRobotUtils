@@ -4,8 +4,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.window.FrameWindowScope
-import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import data.SimpleAppBarMenuItem
+import data.AppBarMenuItemWithContext
+import data.AppBarMenuList
 import data.Report
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,6 +15,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import strings.S
 import utils.Dialog
 import utils.DialogFile
 import utils.RXTX
@@ -48,24 +51,59 @@ fun main() {
 
         val robot = remember { KRobot(coroutineScope) }
 
+        val appBarMenuItems = listOf(
+            AppBarMenuList(
+                itemText = S.strings.load,
+                list = listOf(
+                    AppBarMenuItemWithContext(
+                        itemText = "Загрузка с диска (.krsd)",
+                        onClick = { scope ->
+                            isKRSDLoad.value = scope
+                        }
+                    ),
+                    SimpleAppBarMenuItem(
+                        itemText = S.strings.toRobot,
+                        onClick = {
+                            if (robot.isConnect.value) {
+                                robot.disconnect()
+                            } else {
+                                isRobotConnecting.value = true
+                            }
+                        }
+                    ),
+                    SimpleAppBarMenuItem(
+                        itemText = S.strings.toBreakChecker,
+                        onClick = {
+                            if (!rxtx.isConnect.value) {
+                                isBreakCheckerConnecting.value = true
+                            } else {
+                                rxtx.disconnect()
+                            }
+                        }
+                    )
+                )
+            ),
+
+            AppBarMenuList(
+                itemText = S.strings.save,
+                list = listOf(
+                    AppBarMenuItemWithContext(
+                        itemText = "Сохранение проекта",
+                        onClick = { scope ->
+                            isKRSDSave.value = scope
+                        }
+                    ),
+                )
+            )
+        )
+
+
         // Main window
         MainWindow(
+            appBarMenuItems = appBarMenuItems,
             onClose = ::exitApplication,
-            showRobotConnectionWindow = {
-                isRobotConnecting.value = true
-            },
-            showBreakCheckerConnectionWindow = {
-                isBreakCheckerConnecting.value = true
-            },
-            rxtx = rxtx,
             robot = robot,
             report = report.value,
-            onSave = { scope ->
-                isKRSDSave.value = scope
-            },
-            onLoad = { scope ->
-                isKRSDLoad.value = scope
-            }
         )
 
         val dataReadStatus = remember { MutableStateFlow("") }
