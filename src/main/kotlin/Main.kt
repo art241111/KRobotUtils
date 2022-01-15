@@ -5,27 +5,38 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.application
-import data.SimpleAppBarMenuItem
 import data.AppBarMenuItemWithContext
 import data.AppBarMenuList
 import data.Report
+import data.SimpleAppBarMenuItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.apache.poi.ss.usermodel.Cell
+import org.apache.poi.ss.usermodel.Sheet
 import strings.S
 import utils.Dialog
 import utils.DialogFile
 import utils.RXTX
+import utils.excelUtils.setValue
+import utils.excelUtils.workbook
+import utils.excelUtils.write
 import windows.ConnectToBreakChecker
 import windows.MainWindow
 import windows.RobotConnectionWindow
 import javax.swing.UIManager
 import javax.swing.filechooser.FileNameExtensionFilter
 
+
 fun main() {
+    workbook ("mainProtocol.xlsx") {
+        val sheet: Sheet = getSheetAt(0)
+        sheet.setValue(4, 9, "hello")
+    }.write("mainProtocol2.xlsx")
+
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
     application {

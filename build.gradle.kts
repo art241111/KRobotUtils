@@ -15,6 +15,7 @@ repositories {
     jcenter()
     mavenCentral()
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    maven(url = "https://jitpack.io")
 }
 
 dependencies {
@@ -27,6 +28,8 @@ dependencies {
     implementation(project(":RXTX"))
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+
+    implementation("com.github.EvanRupert:ExcelKt:v0.1.2")
 }
 
 tasks.withType<KotlinCompile>() {
