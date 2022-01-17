@@ -1,4 +1,4 @@
-package windows
+package windows.mainWindow
 
 import KRobot
 import androidx.compose.foundation.layout.Column
