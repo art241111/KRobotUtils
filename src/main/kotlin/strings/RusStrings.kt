@@ -16,6 +16,7 @@ class RusStrings : Strings {
     override val saveBackup = "Сохранить бэкап (.as)"
 
     // Robot connection
+    override val robotConnection = "Подключение к роботу"
     override val enterIp = "Введите Ip"
     override val enterPort = "Введите порт"
 

@@ -28,6 +28,7 @@ fun RobotConnectionWindow(
     val ip = remember { mutableStateOf("localhost") }
     val port = remember { mutableStateOf("9105") }
     Window(
+        title = S.strings.robotConnection,
         onCloseRequest = onClose,
         state = rememberWindowState(width = 300.dp, height = 300.dp)
     ) {

@@ -16,6 +16,7 @@ interface Strings {
    val saveBackup: String
 
    // Robot connection
+   val robotConnection: String
    val enterIp: String
    val enterPort: String
 

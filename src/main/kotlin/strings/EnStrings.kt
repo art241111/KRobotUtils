@@ -16,6 +16,7 @@ class EnStrings : Strings {
     override val saveBackup = "Save backup (.as)"
 
     // Robot connection
+    override val robotConnection = "Connect to the robot"
     override val enterIp = "Enter Ip"
     override val enterPort = "Enter port"
 
