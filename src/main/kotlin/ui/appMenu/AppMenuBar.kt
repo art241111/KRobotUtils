@@ -46,12 +46,18 @@ fun AppMenuBar(
                                 if (it is SimpleAppBarMenuItem) {
                                     MenuBarItem(
                                         text = it.itemText,
-                                        onClick = it.onClick
+                                        onClick = {
+                                            it.onClick()
+                                            expanded.value = false
+                                        }
                                     )
                                 } else if (it is AppBarMenuItemWithContext) {
                                     MenuBarItem(
                                         text = it.itemText,
-                                        onClick = { it.onClick(scope) }
+                                        onClick = {
+                                            it.onClick(scope)
+                                            expanded.value = false
+                                        }
                                     )
                                 }
                             }
