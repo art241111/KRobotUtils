@@ -7,6 +7,7 @@ import kotlinx.serialization.Serializable
 data class Data(
     val backup: List<String>,
     val robotType: String,
+    val serialNumber: String = "",
     val uptimeController: Double,
     val uptimeServo: Double,
     val brakeCounter: Int,
@@ -21,6 +22,7 @@ suspend fun KRobot.getData(dataReadStatus: MutableStateFlow<String>? = null): Da
 
     // OPEINFO - информация о роботе
     var robotType = ""
+    var serialNumber = ""
     // CONT_TIM - часы наработки контроллера
     var uptimeController = 0.0
     // SERV_TIM - время работы сево-моторов
@@ -32,7 +34,9 @@ suspend fun KRobot.getData(dataReadStatus: MutableStateFlow<String>? = null): Da
     // MTON_CNT - motor on counter
     var motorOnCounter = 0
 
+    // M_MOVE_TJT
     val motorsMoveTime = mutableListOf<Double?>()
+    // M_DIST_DJT
     val motorsMoveAngle = mutableListOf<Double?>()
 
     coroutineScope.launch {
@@ -40,9 +44,10 @@ suspend fun KRobot.getData(dataReadStatus: MutableStateFlow<String>? = null): Da
             with(it) {
                 when {
                     contains("OPEINFO  ") -> {
-                        println(it)
-                        println(it.substringAfter(")").trim())
                         robotType = it.substringAfter(")").trim()
+
+                        val split = this.split("  ")
+                        serialNumber = split[1].split(" ").last()
                     }
                     contains("CONT_TIM") -> uptimeController = getValue().toDouble()
                     contains("SERV_TIM") -> uptimeServo = getValue().toDouble()
@@ -67,6 +72,7 @@ suspend fun KRobot.getData(dataReadStatus: MutableStateFlow<String>? = null): Da
     val data = Data(
         backup,
         robotType,
+        serialNumber,
         uptimeController,
         uptimeServo,
         brakeCounter,

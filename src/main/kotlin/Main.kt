@@ -214,6 +214,7 @@ fun main() {
                                         // Add header
                                         // TODO: Add serial number
                                         sheet.setValue(4, 9, robotType)
+                                        sheet.setValue(11,9, serialNumber)
                                         sheet.setValue(9,12, uptimeController.toString())
                                         sheet.setValue(9,13, uptimeServo.toString())
 

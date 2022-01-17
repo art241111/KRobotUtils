@@ -92,6 +92,7 @@ private fun HeaderData(
     Column(modifier) {
         if (kRobot.data != null) {
             PrintValueView("Robot type", kRobot.data!!.robotType)
+            PrintValueView("Serial number", kRobot.data!!.serialNumber)
             PrintValueView("Uptime controller", kRobot.data!!.uptimeController.toString())
             PrintValueView("Uptime servos", kRobot.data!!.uptimeServo.toString())
             PrintValueView("Motor on counter", kRobot.data!!.motorOnCounter.toString())
