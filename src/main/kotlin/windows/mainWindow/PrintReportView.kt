@@ -4,11 +4,9 @@ import KRobot
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Card
 import androidx.compose.material.Text
@@ -22,14 +20,14 @@ import data.Report
 @Composable
 fun PrintReportView(
     modifier: Modifier = Modifier,
-    kRobot: KRobot,
+    robot: KRobot,
     report: Report?
 ) {
     Column(modifier) {
-        HeaderData(kRobot = kRobot)
+        HeaderData(kRobot = robot)
 
         if (report != null) {
-            ReportView(report)
+            ReportView(report, robot)
         }
     }
 }
@@ -37,7 +35,8 @@ fun PrintReportView(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ReportView(
-    report: Report
+    report: Report,
+    robot: KRobot
 ) {
     Card(
         modifier = Modifier.padding(10.dp)
@@ -65,9 +64,16 @@ private fun ReportView(
                                 textAlign = TextAlign.Center
                             )
 
-                            PrintValueView("Attracting volts:", reportJT.attractingVolts.meanData.toString())
-                            PrintValueView("Releasing volts:", reportJT.releasingVolts.meanData.toString())
-                            PrintValueView("Brake resistance:", reportJT.brakeResistance.measureData.toString())
+                            PrintValueView("Attracting volts", reportJT.attractingVolts.meanData.toString())
+                            PrintValueView("Releasing volts", reportJT.releasingVolts.meanData.toString())
+                            PrintValueView("Brake resistance", reportJT.brakeResistance.measureData.toString())
+
+                            if (robot.data?.motorsMoveTimes?.isNotEmpty() == true)
+                                robot.data?.motorsMoveTimes?.get(index)
+                                    ?.let { PrintValueView("Время работы", it.toString()) }
+                            if (robot.data?.motorsMoveAngles?.isNotEmpty() == true)
+                                robot.data?.motorsMoveAngles?.get(index)
+                                    ?.let { PrintValueView("Смещение", it.toString()) }
                         }
                     }
                 }

@@ -11,7 +11,9 @@ data class Data(
     val uptimeServo: Double,
     val brakeCounter: Int,
     val eStopCounter: Int,
-    val motorOnCounter: Int
+    val motorOnCounter: Int,
+    val motorsMoveTimes: List<Double?> = emptyList(),
+    val motorsMoveAngles: List<Double?> = emptyList(),
 )
 
 suspend fun KRobot.getData(dataReadStatus: MutableStateFlow<String>? = null): Data {
@@ -30,6 +32,9 @@ suspend fun KRobot.getData(dataReadStatus: MutableStateFlow<String>? = null): Da
     // MTON_CNT - motor on counter
     var motorOnCounter = 0
 
+    val motorsMoveTime = mutableListOf<Double?>()
+    val motorsMoveAngle = mutableListOf<Double?>()
+
     coroutineScope.launch {
         backup.forEach {
             with(it) {
@@ -44,12 +49,32 @@ suspend fun KRobot.getData(dataReadStatus: MutableStateFlow<String>? = null): Da
                     contains("BRKE_CNT") -> brakeCounter = getValue().toInt()
                     contains("ESTP_CNT") -> eStopCounter = getValue().toInt()
                     contains("MTON_CNT") -> motorOnCounter = getValue().toInt()
+                    contains("M_MOVE_TJT") -> {
+                        motorsMoveTime.addAll(getValue().split(" ").map { value ->
+                            value.trim().toDoubleOrNull()
+                        })
+                    }
+                    contains("M_DIST_DJT") -> {
+                        motorsMoveAngle.addAll(getValue().split(" ").map { value ->
+                            value.trim().toDoubleOrNull()
+                        })
+                    }
 
                 }
             }
         }
     }.join()
-    val data = Data(backup, robotType, uptimeController, uptimeServo, brakeCounter, eStopCounter, motorOnCounter)
+    val data = Data(
+        backup,
+        robotType,
+        uptimeController,
+        uptimeServo,
+        brakeCounter,
+        eStopCounter,
+        motorOnCounter,
+        motorsMoveTime,
+        motorsMoveAngle
+    )
     println(data)
     return data
 }
