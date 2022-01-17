@@ -75,7 +75,6 @@ suspend fun KRobot.getData(dataReadStatus: MutableStateFlow<String>? = null): Da
         motorsMoveTime,
         motorsMoveAngle
     )
-    println(data)
     return data
 }
 
