@@ -15,10 +15,14 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.apache.poi.ss.usermodel.Sheet
 import strings.S
 import utils.Dialog
 import utils.DialogFile
 import utils.RXTX
+import utils.excelUtils.setValue
+import utils.excelUtils.workbook
+import utils.excelUtils.write
 import windows.ConnectToBreakChecker
 import windows.mainWindow.MainWindow
 import windows.RobotConnectionWindow
@@ -27,11 +31,6 @@ import javax.swing.filechooser.FileNameExtensionFilter
 
 
 fun main() {
-//    workbook ("mainProtocol.xlsx") {
-//        val sheet: Sheet = getSheetAt(0)
-//        sheet.setValue(4, 9, "hello")
-//    }.write("mainProtocol2.xlsx")
-
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
     application {
@@ -53,6 +52,8 @@ fun main() {
         val isRobotConnecting = remember { mutableStateOf(false) }
         val isBreakCheckerConnecting = remember { mutableStateOf(false) }
         val isKRSDSave = remember { mutableStateOf<FrameWindowScope?>(null) }
+        val isReportSave = remember { mutableStateOf<FrameWindowScope?>(null) }
+        val isBackupSave = remember { mutableStateOf<FrameWindowScope?>(null) }
         val isKRSDLoad = remember { mutableStateOf<FrameWindowScope?>(null) }
 
         val robot = remember { KRobot(coroutineScope) }
@@ -94,9 +95,21 @@ fun main() {
                 itemText = S.strings.save,
                 list = listOf(
                     AppBarMenuItemWithContext(
-                        itemText = "Сохранение проекта",
+                        itemText = S.strings.saveProject,
                         onClick = { scope ->
                             isKRSDSave.value = scope
+                        }
+                    ),
+                    AppBarMenuItemWithContext(
+                        itemText = S.strings.saveExcelTable,
+                        onClick = { scope ->
+                            isReportSave.value = scope
+                        }
+                    ),
+                    AppBarMenuItemWithContext(
+                        itemText = S.strings.saveBackup,
+                        onClick = { scope ->
+                            isBackupSave.value = scope
                         }
                     ),
                 )
@@ -148,20 +161,22 @@ fun main() {
                     extensions = listOf(FileNameExtensionFilter("KRSD Files", "krsd")),
                     scope = isKRSDSave.value!!
                 ) { filesDirect ->
-                    coroutineScope.launch(Dispatchers.IO) {
-                        var string = ""
-                        if (report.value != null) {
-                            string += Json.encodeToString(report.value)
+                    if (filesDirect.isNotEmpty()) {
+                        coroutineScope.launch(Dispatchers.IO) {
+                            var string = ""
+                            if (report.value != null) {
+                                string += Json.encodeToString(report.value)
+                            }
+
+                            string += "\n----------------------------------\n"
+
+                            if (robot.data != null) {
+                                string += Json.encodeToString(robot.data)
+                            }
+
+                            filesDirect[0].bufferedWriter().use { out -> out.write(string) }
+                            isKRSDSave.value = null
                         }
-
-                        string += "\n----------------------------------\n"
-
-                        if (robot.data != null) {
-                            string += Json.encodeToString(robot.data)
-                        }
-
-                        filesDirect[0].bufferedWriter().use { out -> out.write(string) }
-                        isKRSDSave.value = null
                     }
                 }
             }
@@ -173,12 +188,51 @@ fun main() {
                     extensions = listOf(FileNameExtensionFilter("KRSD Files", "krsd")),
                     scope = isKRSDLoad.value!!
                 ) { filesDirect ->
-                    val str = filesDirect[0].readText(Charsets.UTF_8)
-                    val splt = str.split("----------------------------------")
-                    report.value = Json.decodeFromString<Report>(splt[0])
-                    robot.data = Json.decodeFromString<Data>(splt[1])
+                    if (filesDirect.isNotEmpty()) {
+                        val str = filesDirect[0].readText(Charsets.UTF_8)
+                        val splt = str.split("----------------------------------")
+                        report.value = Json.decodeFromString<Report>(splt[0])
+                        robot.data = Json.decodeFromString<Data>(splt[1])
+                    }
                 }
                 isKRSDLoad.value = null
+            }
+
+            isReportSave.value != null -> {
+                DialogFile(
+                    mode = Dialog.Mode.SAVE,
+                    title = "Save report (.xlsx)",
+                    extensions = listOf(FileNameExtensionFilter("Excel file", "xlsx")),
+                    scope = isReportSave.value!!
+                ) { filesDirect ->
+                    if (filesDirect.isNotEmpty()) {
+                        coroutineScope.launch(Dispatchers.IO) {
+                            workbook("mainProtocol.xlsx") {
+                                val sheet: Sheet = getSheetAt(0)
+                                sheet.setValue(4, 9, "hello")
+                            }.write(filesDirect[0].absolutePath)
+                        }
+                    }
+                }
+            }
+
+            isBackupSave.value != null -> {
+                DialogFile(
+                    mode = Dialog.Mode.SAVE,
+                    title = "Save backup (.as)",
+                    extensions = listOf(FileNameExtensionFilter("As file", "as")),
+                    scope = isBackupSave.value!!
+                ) { filesDirect ->
+                    if (filesDirect.isNotEmpty()) {
+                        coroutineScope.launch(Dispatchers.IO) {
+                            filesDirect[0].printWriter().use { out ->
+                                robot.data?.backup?.forEach {
+                                    out.print(it)
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 

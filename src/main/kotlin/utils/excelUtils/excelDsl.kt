@@ -29,9 +29,7 @@ fun Sheet.setValue(colIndex: Int, rowIndex: Int, value: String) {
 
 
 fun Workbook.write(filename: String) {
-    val projectDirAbsolutePath = Paths.get("").toAbsolutePath().toString()
-    val resourcesPath = Paths.get(projectDirAbsolutePath, "/src/main/resources")
-    FileOutputStream("$resourcesPath/$filename").use { out ->
+    FileOutputStream(filename).use { out ->
         write(out)
     }
 }
