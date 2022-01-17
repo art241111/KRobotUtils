@@ -11,7 +11,10 @@ interface Strings {
    val file: String
    val save: String
    val load: String
-   
+   val saveProject: String
+   val saveExcelTable: String
+   val saveBackup: String
+
    // Robot connection
    val enterIp: String
    val enterPort: String

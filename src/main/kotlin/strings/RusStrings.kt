@@ -6,11 +6,14 @@ class RusStrings : Strings {
     // Menu bar
     override val connect = "Подключение"
     override val disconnect = "Отключение"
-    override val toRobot = "Робот"
-    override val toBreakChecker = "Break checker"
+    override val toRobot = "Загрузка с робота"
+    override val toBreakChecker = "Загрузка с Break checker"
     override val file = "Файл"
     override val save = "Сохранить"
     override val load = "Загрузить"
+    override val saveProject = "Сохранить проект (.krsd)"
+    override val saveExcelTable = "Сохранить отчет (.xlsx)"
+    override val saveBackup = "Сохранить бэкап (.as)"
 
     // Robot connection
     override val enterIp = "Введите Ip"

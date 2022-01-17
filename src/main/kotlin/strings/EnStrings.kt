@@ -6,11 +6,14 @@ class EnStrings : Strings {
     // Menu bar
     override val connect = "Connect"
     override val disconnect = "Disconnect"
-    override val toRobot = "Robot"
-    override val toBreakChecker = "Break checker"
+    override val toRobot = "Load from robot"
+    override val toBreakChecker = "Load from break checker"
     override val file = "File"
     override val save = "Save"
     override val load = "Load"
+    override val saveProject = "Save project (.krsd)"
+    override val saveExcelTable = "Save report (.xlsx)"
+    override val saveBackup = "Save backup (.as)"
 
     // Robot connection
     override val enterIp = "Enter Ip"
