@@ -60,42 +60,36 @@ private fun ReportView(
             PrintValueView("Measured Ohm Judge", report.measuredOhmJudge.toString())
 
             robot.data?.let {
-                val rowCount = it.axesCount / 2
-
                 Table(
                     col = 2,
-                    row = if (rowCount % 2 == 0) rowCount else rowCount + 1
-                ) { col, row ->
-                    val index = col * 2 + row
+                    count = it.axesCount,
+                ) { index ->
                     val reportJT = report.reportsJT[index]
 
-                    if ((index + 1) <= it.axesCount) {
-                        Card(
-                            modifier = Modifier
-                                .padding(4.dp),
-                            elevation = 8.dp,
-                        ) {
-                            Column {
-                                Text(
-                                    text = "Ось JT${index + 1}",
-                                    modifier = Modifier,
-                                    textAlign = TextAlign.Center
-                                )
+                    Card(
+                        modifier = Modifier
+                            .padding(4.dp),
+                        elevation = 8.dp,
+                    ) {
+                        Column {
+                            Text(
+                                text = "Ось JT${index + 1}",
+                                modifier = Modifier,
+                                textAlign = TextAlign.Center
+                            )
 
-                                PrintValueView("Attracting volts", reportJT.attractingVolts.meanData.toString())
-                                PrintValueView("Releasing volts", reportJT.releasingVolts.meanData.toString())
-                                PrintValueView("Brake resistance", reportJT.brakeResistance.measureData.toString())
+                            PrintValueView("Attracting volts", reportJT.attractingVolts.meanData.toString())
+                            PrintValueView("Releasing volts", reportJT.releasingVolts.meanData.toString())
+                            PrintValueView("Brake resistance", reportJT.brakeResistance.measureData.toString())
 
-                                if (robot.data?.motorsMoveTimes?.isNotEmpty() == true)
-                                    robot.data?.motorsMoveTimes?.get(index)
-                                        ?.let { PrintValueView("Время работы", it.toString()) }
-                                if (robot.data?.motorsMoveAngles?.isNotEmpty() == true)
-                                    robot.data?.motorsMoveAngles?.get(index)
-                                        ?.let { PrintValueView("Смещение", it.toString()) }
-                            }
+                            if (robot.data?.motorsMoveTimes?.isNotEmpty() == true)
+                                robot.data?.motorsMoveTimes?.get(index)
+                                    ?.let { PrintValueView("Время работы", it.toString()) }
+                            if (robot.data?.motorsMoveAngles?.isNotEmpty() == true)
+                                robot.data?.motorsMoveAngles?.get(index)
+                                    ?.let { PrintValueView("Смещение", it.toString()) }
                         }
                     }
-
                 }
             }
         }
