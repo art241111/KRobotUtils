@@ -209,7 +209,43 @@ fun main() {
                         coroutineScope.launch(Dispatchers.IO) {
                             workbook("mainProtocol.xlsx") {
                                 val sheet: Sheet = getSheetAt(0)
-                                sheet.setValue(4, 9, "hello")
+                                if (robot.data != null) {
+                                    with(robot.data!!) {
+                                        // Add header
+                                        // TODO: Add serial number
+                                        sheet.setValue(4, 9, robotType)
+                                        sheet.setValue(9,12, uptimeController.toString())
+                                        sheet.setValue(9,13, uptimeServo.toString())
+
+                                        // Add axes
+                                        for (i in 0..2) {
+                                            val sdvig = i * 9
+                                            sheet.setValue(3, 16 + sdvig, motorsMoveTimes[i].toString())
+                                            sheet.setValue(3, 17 + sdvig, motorsMoveAngles[i].toString())
+                                            if (report.value != null) {
+                                                sheet.setValue(4, 20 + sdvig, report.value!!.reportsJT[i].brakeResistance.measureData.toString())
+                                                sheet.setValue(4, 21 + sdvig, report.value!!.reportsJT[i].attractingVolts.meanData.toString())
+                                                sheet.setValue(4, 22 + sdvig, report.value!!.reportsJT[i].releasingVolts.meanData.toString())
+                                            }
+                                        }
+
+
+                                        // Add axes
+                                        for (i in 0..2) {
+                                            val sdvig = i * 9
+                                            sheet.setValue(15, 6 + sdvig, motorsMoveTimes[3 + i].toString())
+                                            sheet.setValue(15, 7 + sdvig, motorsMoveAngles[3 + i].toString())
+                                            if (report.value != null) {
+                                                sheet.setValue(16, 10 + sdvig, report.value!!.reportsJT[3 + i].brakeResistance.measureData.toString())
+                                                sheet.setValue(16, 11 + sdvig, report.value!!.reportsJT[3 + i].attractingVolts.meanData.toString())
+                                                sheet.setValue(16, 12 + sdvig, report.value!!.reportsJT[3 + i].releasingVolts.meanData.toString())
+                                            }
+                                        }
+
+
+
+                                    }
+                                }
                             }.write(filesDirect[0].absolutePath)
                         }
                     }
