@@ -55,6 +55,7 @@ fun main() {
         val isReportSave = remember { mutableStateOf<FrameWindowScope?>(null) }
         val isBackupSave = remember { mutableStateOf<FrameWindowScope?>(null) }
         val isKRSDLoad = remember { mutableStateOf<FrameWindowScope?>(null) }
+        val isFromBackUpLoad = remember { mutableStateOf<FrameWindowScope?>(null) }
 
         val robot = remember { KRobot(coroutineScope) }
 
@@ -66,6 +67,12 @@ fun main() {
                         itemText = "Загрузка с диска (.krsd)",
                         onClick = { scope ->
                             isKRSDLoad.value = scope
+                        }
+                    ),
+                    AppBarMenuItemWithContext(
+                        itemText = "Загрузка с бэкапа (.as)",
+                        onClick = { scope ->
+                            isFromBackUpLoad.value = scope
                         }
                     ),
                     SimpleAppBarMenuItem(
@@ -212,11 +219,10 @@ fun main() {
                                 if (robot.data != null) {
                                     with(robot.data!!) {
                                         // Add header
-                                        // TODO: Add serial number
                                         sheet.setValue(4, 9, robotType)
-                                        sheet.setValue(11,9, serialNumber)
-                                        sheet.setValue(9,12, uptimeController.toString())
-                                        sheet.setValue(9,13, uptimeServo.toString())
+                                        sheet.setValue(11, 9, serialNumber)
+                                        sheet.setValue(9, 12, uptimeController.toString())
+                                        sheet.setValue(9, 13, uptimeServo.toString())
 
                                         // Add axes
                                         for (i in 0..2) {
@@ -224,9 +230,21 @@ fun main() {
                                             sheet.setValue(3, 16 + sdvig, motorsMoveTimes[i].toString())
                                             sheet.setValue(3, 17 + sdvig, motorsMoveAngles[i].toString())
                                             if (report.value != null) {
-                                                sheet.setValue(4, 20 + sdvig, report.value!!.reportsJT[i].brakeResistance.measureData.toString())
-                                                sheet.setValue(4, 21 + sdvig, report.value!!.reportsJT[i].attractingVolts.meanData.toString())
-                                                sheet.setValue(4, 22 + sdvig, report.value!!.reportsJT[i].releasingVolts.meanData.toString())
+                                                sheet.setValue(
+                                                    4,
+                                                    20 + sdvig,
+                                                    report.value!!.reportsJT[i].brakeResistance.measureData.toString()
+                                                )
+                                                sheet.setValue(
+                                                    4,
+                                                    21 + sdvig,
+                                                    report.value!!.reportsJT[i].attractingVolts.meanData.toString()
+                                                )
+                                                sheet.setValue(
+                                                    4,
+                                                    22 + sdvig,
+                                                    report.value!!.reportsJT[i].releasingVolts.meanData.toString()
+                                                )
                                             }
                                         }
 
@@ -237,17 +255,30 @@ fun main() {
                                             sheet.setValue(15, 6 + sdvig, motorsMoveTimes[3 + i].toString())
                                             sheet.setValue(15, 7 + sdvig, motorsMoveAngles[3 + i].toString())
                                             if (report.value != null) {
-                                                sheet.setValue(16, 10 + sdvig, report.value!!.reportsJT[3 + i].brakeResistance.measureData.toString())
-                                                sheet.setValue(16, 11 + sdvig, report.value!!.reportsJT[3 + i].attractingVolts.meanData.toString())
-                                                sheet.setValue(16, 12 + sdvig, report.value!!.reportsJT[3 + i].releasingVolts.meanData.toString())
+                                                sheet.setValue(
+                                                    16,
+                                                    10 + sdvig,
+                                                    report.value!!.reportsJT[3 + i].brakeResistance.measureData.toString()
+                                                )
+                                                sheet.setValue(
+                                                    16,
+                                                    11 + sdvig,
+                                                    report.value!!.reportsJT[3 + i].attractingVolts.meanData.toString()
+                                                )
+                                                sheet.setValue(
+                                                    16,
+                                                    12 + sdvig,
+                                                    report.value!!.reportsJT[3 + i].releasingVolts.meanData.toString()
+                                                )
                                             }
                                         }
-
 
 
                                     }
                                 }
                             }.write(filesDirect[0].absolutePath)
+
+                            isReportSave.value = null
                         }
                     }
                 }
@@ -267,7 +298,27 @@ fun main() {
                                     out.print(it)
                                 }
                             }
+                            isBackupSave.value = null
                         }
+                    }
+                }
+
+            }
+
+            isFromBackUpLoad.value != null -> {
+                DialogFile(
+                    mode = Dialog.Mode.LOAD,
+                    title = "Load from backup (.as)",
+                    extensions = listOf(FileNameExtensionFilter("As file", "as")),
+                    scope = isFromBackUpLoad.value!!
+                ) { filesDirect ->
+                    if (filesDirect.isNotEmpty()) {
+                        coroutineScope.launch(Dispatchers.IO) {
+                            val str = filesDirect[0].readText(Charsets.UTF_8).split("\n")
+                            robot.getDataFromBackup(str)
+                        }
+
+                        isFromBackUpLoad.value = null
                     }
                 }
             }

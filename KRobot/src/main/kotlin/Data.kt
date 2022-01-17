@@ -17,9 +17,9 @@ data class Data(
     val motorsMoveAngles: List<Double?> = emptyList(),
 )
 
-suspend fun KRobot.getData(dataReadStatus: MutableStateFlow<String>? = null): Data {
-    val backup = loadFileFromRobot(dataReadStatus)
-
+suspend fun KRobot.getDataFromBackup(
+    backup: List<String>
+) {
     // OPEINFO - информация о роботе
     var robotType = ""
     var serialNumber = ""
@@ -81,7 +81,12 @@ suspend fun KRobot.getData(dataReadStatus: MutableStateFlow<String>? = null): Da
         motorsMoveTime,
         motorsMoveAngle
     )
-    return data
+    this.data = data
+}
+
+suspend fun KRobot.getData(dataReadStatus: MutableStateFlow<String>? = null) {
+    val backup = loadFileFromRobot(dataReadStatus)
+    getDataFromBackup(backup)
 }
 
 private fun String.getValue(): String = split("  ")[1].trim()

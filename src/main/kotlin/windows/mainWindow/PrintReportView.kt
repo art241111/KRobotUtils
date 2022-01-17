@@ -11,6 +11,9 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -90,14 +93,15 @@ private fun HeaderData(
     kRobot: KRobot
 ) {
     Column(modifier) {
-        if (kRobot.data != null) {
-            PrintValueView("Robot type", kRobot.data!!.robotType)
-            PrintValueView("Serial number", kRobot.data!!.serialNumber)
-            PrintValueView("Uptime controller", kRobot.data!!.uptimeController.toString())
-            PrintValueView("Uptime servos", kRobot.data!!.uptimeServo.toString())
-            PrintValueView("Motor on counter", kRobot.data!!.motorOnCounter.toString())
-            PrintValueView("E-stop counter", kRobot.data!!.eStopCounter.toString())
-            PrintValueView("Brake counter", kRobot.data!!.brakeCounter.toString())
+        val data = kRobot.dataFlow.collectAsState()
+        if (data.value != null) {
+            PrintValueView("Robot type", data.value!!.robotType)
+            PrintValueView("Serial number", data.value!!.serialNumber)
+            PrintValueView("Uptime controller", data.value!!.uptimeController.toString())
+            PrintValueView("Uptime servos", data.value!!.uptimeServo.toString())
+            PrintValueView("Motor on counter", data.value!!.motorOnCounter.toString())
+            PrintValueView("E-stop counter", data.value!!.eStopCounter.toString())
+            PrintValueView("Brake counter", data.value!!.brakeCounter.toString())
         }
     }
 }
