@@ -2,22 +2,26 @@ package windows.mainWindow
 
 import KRobot
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.GridCells
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import data.Report
+import ui.Table
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -26,11 +30,15 @@ fun PrintReportView(
     robot: KRobot,
     report: Report?
 ) {
-    Column(modifier) {
-        HeaderData(kRobot = robot)
+    LazyColumn(modifier) {
+        item {
+            HeaderData(kRobot = robot)
+        }
 
-        if (report != null) {
-            ReportView(report, robot)
+        item {
+            if (report != null) {
+                ReportView(report, robot)
+            }
         }
     }
 }
@@ -39,10 +47,10 @@ fun PrintReportView(
 @Composable
 private fun ReportView(
     report: Report,
-    robot: KRobot
+    robot: KRobot,
 ) {
     Card(
-        modifier = Modifier.padding(10.dp)
+        modifier = Modifier.padding(10.dp).fillMaxWidth()
     ) {
         Column {
             PrintValueView("Checker No", report.checkerNo.toString())
@@ -51,40 +59,47 @@ private fun ReportView(
             PrintValueView("Separate Harness", report.separateHarness.toString())
             PrintValueView("Measured Ohm Judge", report.measuredOhmJudge.toString())
 
-            LazyVerticalGrid(
-                cells = GridCells.Adaptive(300.dp)
-            ) {
-                itemsIndexed(report.reportsJT) { index, reportJT ->
-                    Card(
-                        modifier = Modifier
-                            .padding(4.dp),
-                        elevation = 8.dp,
-                    ) {
-                        Column {
-                            Text(
-                                text = "Ось JT${index + 1}",
-                                modifier = Modifier.fillParentMaxWidth(),
-                                textAlign = TextAlign.Center
-                            )
+            robot.data?.let {
+                val rowCount = it.axesCount / 2
 
-                            PrintValueView("Attracting volts", reportJT.attractingVolts.meanData.toString())
-                            PrintValueView("Releasing volts", reportJT.releasingVolts.meanData.toString())
-                            PrintValueView("Brake resistance", reportJT.brakeResistance.measureData.toString())
+                Table(
+                    col = 2,
+                    row = if (rowCount % 2 == 0) rowCount else rowCount + 1
+                ) { col, row ->
+                    val index = col * 2 + row
+                    val reportJT = report.reportsJT[index]
 
-                            if (robot.data?.motorsMoveTimes?.isNotEmpty() == true)
-                                robot.data?.motorsMoveTimes?.get(index)
-                                    ?.let { PrintValueView("Время работы", it.toString()) }
-                            if (robot.data?.motorsMoveAngles?.isNotEmpty() == true)
-                                robot.data?.motorsMoveAngles?.get(index)
-                                    ?.let { PrintValueView("Смещение", it.toString()) }
+                    if ((index + 1) <= it.axesCount) {
+                        Card(
+                            modifier = Modifier
+                                .padding(4.dp),
+                            elevation = 8.dp,
+                        ) {
+                            Column {
+                                Text(
+                                    text = "Ось JT${index + 1}",
+                                    modifier = Modifier,
+                                    textAlign = TextAlign.Center
+                                )
+
+                                PrintValueView("Attracting volts", reportJT.attractingVolts.meanData.toString())
+                                PrintValueView("Releasing volts", reportJT.releasingVolts.meanData.toString())
+                                PrintValueView("Brake resistance", reportJT.brakeResistance.measureData.toString())
+
+                                if (robot.data?.motorsMoveTimes?.isNotEmpty() == true)
+                                    robot.data?.motorsMoveTimes?.get(index)
+                                        ?.let { PrintValueView("Время работы", it.toString()) }
+                                if (robot.data?.motorsMoveAngles?.isNotEmpty() == true)
+                                    robot.data?.motorsMoveAngles?.get(index)
+                                        ?.let { PrintValueView("Смещение", it.toString()) }
+                            }
                         }
                     }
+
                 }
             }
         }
-
     }
-
 }
 
 @Composable

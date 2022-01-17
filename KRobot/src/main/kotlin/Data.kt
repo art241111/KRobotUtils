@@ -8,6 +8,7 @@ data class Data(
     val backup: List<String>,
     val robotType: String,
     val serialNumber: String = "",
+    val axesCount: Int = 0,
     val uptimeController: Double,
     val uptimeServo: Double,
     val brakeCounter: Int,
@@ -23,6 +24,7 @@ suspend fun KRobot.getDataFromBackup(
     // OPEINFO - информация о роботе
     var robotType = ""
     var serialNumber = ""
+    var axesCount = 0
     // CONT_TIM - часы наработки контроллера
     var uptimeController = 0.0
     // SERV_TIM - время работы сево-моторов
@@ -43,9 +45,12 @@ suspend fun KRobot.getDataFromBackup(
         backup.forEach {
             with(it) {
                 when {
+                    contains("ZROBOT.TYPE") -> {
+                        val str = this.split(" ").filter { it != "" }
+                        robotType = str[6]
+                        axesCount = str[3].toIntOrNull() ?: 0
+                    }
                     contains("OPEINFO  ") -> {
-                        robotType = it.substringAfter(")").trim()
-
                         val split = this.split("  ")
                         serialNumber = split[1].split(" ").last()
                     }
@@ -73,6 +78,7 @@ suspend fun KRobot.getDataFromBackup(
         backup,
         robotType,
         serialNumber,
+        axesCount,
         uptimeController,
         uptimeServo,
         brakeCounter,
