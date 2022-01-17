@@ -64,13 +64,13 @@ fun main() {
                 itemText = S.strings.load,
                 list = listOf(
                     AppBarMenuItemWithContext(
-                        itemText = "Загрузка с диска (.krsd)",
+                        itemText = S.strings.loadProject,
                         onClick = { scope ->
                             isKRSDLoad.value = scope
                         }
                     ),
                     AppBarMenuItemWithContext(
-                        itemText = "Загрузка с бэкапа (.as)",
+                        itemText = S.strings.loadBackup,
                         onClick = { scope ->
                             isFromBackUpLoad.value = scope
                         }
@@ -164,8 +164,8 @@ fun main() {
             isKRSDSave.value != null -> {
                 DialogFile(
                     mode = Dialog.Mode.SAVE,
-                    title = "Save KRSD File",
-                    extensions = listOf(FileNameExtensionFilter("KRSD Files", "krsd")),
+                    title = S.strings.savingProject,
+                    extensions = listOf(FileNameExtensionFilter(S.strings.krsdFile, S.strings.krsdFileExpansion)),
                     scope = isKRSDSave.value!!
                 ) { filesDirect ->
                     if (filesDirect.isNotEmpty()) {
@@ -182,17 +182,17 @@ fun main() {
                             }
 
                             filesDirect[0].bufferedWriter().use { out -> out.write(string) }
-                            isKRSDSave.value = null
                         }
                     }
+                    isKRSDSave.value = null
                 }
             }
 
             isKRSDLoad.value != null -> {
                 DialogFile(
                     mode = Dialog.Mode.LOAD,
-                    title = "Load KRSD File",
-                    extensions = listOf(FileNameExtensionFilter("KRSD Files", "krsd")),
+                    title = S.strings.loadingProject,
+                    extensions = listOf(FileNameExtensionFilter(S.strings.krsdFile, S.strings.krsdFileExpansion)),
                     scope = isKRSDLoad.value!!
                 ) { filesDirect ->
                     if (filesDirect.isNotEmpty()) {
@@ -208,8 +208,8 @@ fun main() {
             isReportSave.value != null -> {
                 DialogFile(
                     mode = Dialog.Mode.SAVE,
-                    title = "Save report (.xlsx)",
-                    extensions = listOf(FileNameExtensionFilter("Excel file", "xlsx")),
+                    title = S.strings.savingExcelTable,
+                    extensions = listOf(FileNameExtensionFilter(S.strings.xlsxFile, S.strings.xlsxFileExpansion)),
                     scope = isReportSave.value!!
                 ) { filesDirect ->
                     if (filesDirect.isNotEmpty()) {
@@ -278,17 +278,17 @@ fun main() {
                                 }
                             }.write(filesDirect[0].absolutePath)
 
-                            isReportSave.value = null
                         }
                     }
+                    isReportSave.value = null
                 }
             }
 
             isBackupSave.value != null -> {
                 DialogFile(
                     mode = Dialog.Mode.SAVE,
-                    title = "Save backup (.as)",
-                    extensions = listOf(FileNameExtensionFilter("As file", "as")),
+                    title = S.strings.savingBackup,
+                    extensions = listOf(FileNameExtensionFilter(S.strings.asFile, S.strings.asFileExpansion)),
                     scope = isBackupSave.value!!
                 ) { filesDirect ->
                     if (filesDirect.isNotEmpty()) {
@@ -298,18 +298,17 @@ fun main() {
                                     out.print(it)
                                 }
                             }
-                            isBackupSave.value = null
                         }
                     }
+                    isBackupSave.value = null
                 }
-
             }
 
             isFromBackUpLoad.value != null -> {
                 DialogFile(
                     mode = Dialog.Mode.LOAD,
-                    title = "Load from backup (.as)",
-                    extensions = listOf(FileNameExtensionFilter("As file", "as")),
+                    title = S.strings.loadBackup,
+                    extensions = listOf(FileNameExtensionFilter(S.strings.asFile, S.strings.asFileExpansion)),
                     scope = isFromBackUpLoad.value!!
                 ) { filesDirect ->
                     if (filesDirect.isNotEmpty()) {
@@ -317,9 +316,8 @@ fun main() {
                             val str = filesDirect[0].readText(Charsets.UTF_8).split("\n")
                             robot.getDataFromBackup(str)
                         }
-
-                        isFromBackUpLoad.value = null
                     }
+                    isFromBackUpLoad.value = null
                 }
             }
         }

@@ -2,6 +2,12 @@ package strings
 
 interface Strings {
    val title: String
+   val krsdFile: String
+   val krsdFileExpansion: String
+   val asFile: String
+   val asFileExpansion: String
+   val xlsxFile: String
+   val xlsxFileExpansion: String
 
    // Menu bar
    val connect: String
@@ -12,8 +18,14 @@ interface Strings {
    val save: String
    val load: String
    val saveProject: String
+   val savingProject: String
+   val loadProject: String
+   val loadingProject: String
    val saveExcelTable: String
+   val savingExcelTable: String
    val saveBackup: String
+   val savingBackup: String
+   val loadBackup: String
 
    // Robot connection
    val robotConnection: String
