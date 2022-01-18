@@ -11,14 +11,13 @@ val Teal200 = Color(0xFF03DAC5)
 
 internal val DarkColorPalette = darkColors(
     primary = Color.Black,
-    primaryVariant = Color.Black,
-    secondary = Color.LightGray,
-    background = Color.LightGray,
+    primaryVariant = Color.DarkGray,
+    secondary = Color.White,
     //surface = Color.Gray,
 )
 
 internal val LightColorPalette = lightColors(
     primary = Red700,
-    primaryVariant = Red700,
-    secondary = Teal200,
+    primaryVariant = Color.White,
+    secondary = Color.DarkGray,
 )

@@ -30,6 +30,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
 
     implementation("com.github.EvanRupert:ExcelKt:v0.1.2")
+
+    implementation("br.com.devsrsouza.compose.icons.jetbrains:css-gg:1.0.0")
 }
 
 tasks.withType<KotlinCompile>() {

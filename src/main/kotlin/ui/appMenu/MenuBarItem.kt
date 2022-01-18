@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,16 +31,9 @@ fun MenuBarItem(
     Row(
         Modifier
             .height(IntrinsicSize.Min)
-            .clickable { onClick() },
+            .clickable { onClick() }.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text, modifier = Modifier.padding(10.dp))
-
-        Divider(
-            modifier = Modifier
-                .fillMaxHeight(0.8f)
-                .width(1.dp)
-        )
+        Text(text, modifier = Modifier.padding(10.dp), color = MaterialTheme.colors.secondary)
     }
-
 }
