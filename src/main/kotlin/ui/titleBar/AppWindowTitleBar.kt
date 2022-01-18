@@ -11,7 +11,6 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -19,7 +18,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowScope
@@ -29,6 +30,7 @@ import compose.icons.cssggicons.MathMinus
 import compose.icons.cssggicons.Maximize
 import compose.icons.cssggicons.MenuOreos
 import compose.icons.cssggicons.Minimize
+import windows.mainWindow.HeaderText
 
 @Composable
 fun WindowScope.AppWindowTitleBar(
@@ -39,7 +41,7 @@ fun WindowScope.AppWindowTitleBar(
     Column {
         Box(Modifier.fillMaxWidth().height(48.dp).background(MaterialTheme.colors.primaryVariant)) {
             Menu(Modifier.align(Alignment.CenterStart), menuStatus)
-            Title(Modifier.align(Alignment.Center), "Robowizard")
+            HeaderText(modifier = Modifier.align(Alignment.Center), text = "Robowizard", fontSize = 18.sp)
             TitleBatButtons(Modifier.align(Alignment.CenterEnd), onClose, scope)
         }
 
@@ -58,11 +60,6 @@ private fun Menu(modifier: Modifier, menuStatus: MutableState<Boolean>) {
             Icon(CssGgIcons.Close, "Close menu", tint = MaterialTheme.colors.secondary)
         }
     }
-}
-
-@Composable
-private fun Title(modifier: Modifier, text: String) {
-    Text(modifier = modifier, text = text, color = MaterialTheme.colors.secondary)
 }
 
 @Composable

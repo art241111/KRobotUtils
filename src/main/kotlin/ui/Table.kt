@@ -15,7 +15,7 @@ fun Table(
     val rowCount = count / 2
     val row = if (rowCount % 2 == 0) rowCount else rowCount + 1
 
-    Column {
+    Column (modifier) {
         for (i in 0 until row) {
             Row {
                 for (j in 0 until col) {

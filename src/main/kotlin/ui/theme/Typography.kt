@@ -12,4 +12,9 @@ val AppTypography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 18.sp,
     ),
+    h1 = TextStyle(
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.Bold,
+        fontSize = 21.sp,
+    )
 )
