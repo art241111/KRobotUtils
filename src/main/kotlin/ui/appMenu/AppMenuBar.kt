@@ -31,7 +31,8 @@ import data.SimpleAppBarMenuItem
 @Composable
 fun AppMenuBar(
     appBarMenuItems: List<AppBarMenuItem>,
-    scope: FrameWindowScope
+    scope: FrameWindowScope,
+    hidePanel: () -> Unit
 ) {
     Row {
         Column(
@@ -49,6 +50,7 @@ fun AppMenuBar(
                                 } else if (it is AppBarMenuItemWithContext) {
                                     it.onClick(scope)
                                 }
+                                hidePanel()
                             },
                             text = it.itemText
                         )
@@ -57,7 +59,7 @@ fun AppMenuBar(
             }
         }
 
-        Divider(modifier = Modifier.width(1.dp).fillMaxHeight(), color = MaterialTheme.colors.secondary)
+        Divider(modifier = Modifier.width(1.dp).fillMaxHeight(), color = Color.DarkGray)
     }
 
 }
