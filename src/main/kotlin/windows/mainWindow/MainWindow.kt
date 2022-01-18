@@ -11,7 +11,7 @@ import data.Report
 import data.AppBarMenuItem
 import strings.S
 import ui.AppMenuBar
-import windows.mainWindow.PrintReportView
+import ui.titleBar.AppWindowTitleBar
 
 @Composable
 fun MainWindow(
@@ -19,18 +19,24 @@ fun MainWindow(
     robot: KRobot,
     report: Report?,
     appBarMenuItems: List<AppBarMenuItem>,
-) = Window(
-    onCloseRequest = onClose,
-    title = S.strings.title,
-    state = rememberWindowState(width = 900.dp, height = 600.dp)
 ) {
-    val scope = this
+    Window(
+        onCloseRequest = onClose,
+        title = S.strings.title,
+        state = rememberWindowState(width = 900.dp, height = 600.dp),
+        undecorated = true,
+        alwaysOnTop = true
+    ) {
+        val scope = this
 
-    MaterialTheme {
-        Column {
-            AppMenuBar(appBarMenuItems, scope)
+        MaterialTheme {
+            Column {
+                AppWindowTitleBar(onClose)
 
-            PrintReportView(robot = robot, report = report)
+                AppMenuBar(appBarMenuItems, scope)
+
+                PrintReportView(robot = robot, report = report)
+            }
         }
     }
 }
