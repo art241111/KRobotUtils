@@ -23,6 +23,11 @@ class KRobot(
     val position: StateFlow<Point> = _position
 
     var data: Data? = null
+        set(value) {
+            dataFlow.value = value
+            field = value
+        }
+    var dataFlow: MutableStateFlow<Data?> = MutableStateFlow(null)
 
     /**
      * Update position
@@ -44,15 +49,15 @@ class KRobot(
         if (port != 0 && ip != "") {
             // Connect to the robot
 
-                connect(
-                    ip,
-                    port,
-                    defaultMessage = "as",
-                    coroutineScope = coroutineScope
-                )
+            connect(
+                ip,
+                port,
+                defaultMessage = "as",
+                coroutineScope = coroutineScope
+            )
 
-                data = getData(dataReadStatus)
-
+//                data = getData(dataReadStatus)
+            getData(dataReadStatus)
 
             setConnectStatusHandler()
             setPositionHandler()
