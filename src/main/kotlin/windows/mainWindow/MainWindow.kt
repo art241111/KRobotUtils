@@ -1,6 +1,7 @@
 package windows.mainWindow
 
 import KRobot
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.MaterialTheme
@@ -27,9 +28,7 @@ fun MainWindow(
         onCloseRequest = onClose,
         title = S.strings.title,
         state = rememberWindowState(width = 1000.dp, height = 600.dp),
-        transparent = true,
-        undecorated = true, //transparent window must be undecorated
-//        alwaysOnTop = true
+        undecorated = true,
     ) {
         val scope = this
         val isShowMenu = remember { mutableStateOf(false) }
@@ -42,12 +41,12 @@ fun MainWindow(
                     menuStatus = isShowMenu
                 )
 
-                Row {
+                Box {
+                    PrintReportView(robot = robot, report = report)
+
                     if (isShowMenu.value) {
                         AppMenuBar(appBarMenuItems, scope) { isShowMenu.value = false }
                     }
-
-                    PrintReportView(robot = robot, report = report)
                 }
 
             }

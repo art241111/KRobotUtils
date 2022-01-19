@@ -44,8 +44,6 @@ fun WindowScope.AppWindowTitleBar(
             HeaderText(modifier = Modifier.align(Alignment.Center), text = "Robowizard", fontSize = 18.sp)
             TitleBatButtons(Modifier.align(Alignment.CenterEnd), onClose, scope)
         }
-
-        Divider(Modifier.fillMaxWidth(), Color.DarkGray)
     }
 }
 

@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -38,12 +39,15 @@ fun PrintReportView(
     report: Report?
 ) {
     val data = robot.dataFlow.collectAsState()
-    Box(Modifier.fillMaxSize().background(MaterialTheme.colors.surface)) {
-        LazyColumn(modifier) {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.primaryVariant)
+    ) {
+        LazyColumn(modifier.padding(20.dp)) {
             if (data.value != null) {
                 item {
                     Column {
-                        Spacer(Modifier.height(10.dp))
                         HeaderText("Robot data")
                         Spacer(Modifier.height(10.dp))
                         HeaderData(data = data.value!!)
@@ -65,7 +69,7 @@ fun PrintReportView(
 }
 
 @Composable
-fun HeaderText(text: String, modifier: Modifier = Modifier, fontSize: TextUnit = MaterialTheme.typography.h1.fontSize ) {
+fun HeaderText(text: String, modifier: Modifier = Modifier, fontSize: TextUnit = MaterialTheme.typography.h1.fontSize) {
     Text(
         modifier = modifier.padding(horizontal = 10.dp),
         text = text,
@@ -82,78 +86,80 @@ private fun ReportView(
     report: Report,
     data: Data,
 ) {
-    Box(
-        modifier = Modifier.padding(5.dp).fillMaxWidth()
-//            .background(LightGray, shape = RoundedCornerShape(10.dp))
+    Column(
+
     ) {
-        Column(
-            Modifier.padding(10.dp)
+        Surface(
+            modifier = Modifier.padding(5.dp).fillMaxWidth(),
+            shape = RoundedCornerShape(5.dp)
         ) {
-            PrintValueView("Checker No", report.checkerNo.toString())
-            PrintValueView("SoftwareVersion", report.softwareVersion)
-            PrintValueView("MachineType", report.machineType)
-            PrintValueView("Separate Harness", report.separateHarness.toString())
-            PrintValueView("Measured Ohm Judge", report.measuredOhmJudge.toString())
+            Column(Modifier.padding(10.dp)) {
+                PrintValueView("Checker No", report.checkerNo.toString())
+                PrintValueView("SoftwareVersion", report.softwareVersion)
+                PrintValueView("MachineType", report.machineType)
+                PrintValueView("Separate Harness", report.separateHarness.toString())
+                PrintValueView("Measured Ohm Judge", report.measuredOhmJudge.toString())
+            }
+        }
 
+        Table(
+            modifier = Modifier.fillMaxHeight(),
+            col = 2,
+            count = data.axesCount,
+        ) { index ->
+            val reportJT = report.reportsJT[index]
 
-            Table(
-                modifier = Modifier.fillMaxHeight(),
-                col = 2,
-                count = data.axesCount,
-            ) { index ->
-                val reportJT = report.reportsJT[index]
+            Box(
+                modifier = Modifier
+                    .padding(4.dp)
+                    .weight(1f)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(Red200, Red500)
+                        ),
+                        shape = RoundedCornerShape(15.dp),
+                    )
 
-                Box(
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .weight(1f)
-                        .background(
-                            brush = Brush.verticalGradient(
-                                colors = listOf(Red200, Red500)
-                            ),
-                            shape = RoundedCornerShape(15.dp),
-                        )
+            ) {
+                Column(Modifier.padding(10.dp)) {
+                    PrintValueView(
+                        label = "Ось JT",
+                        value = (index + 1).toString(),
+                        color = Color.White
+                    )
+                    PrintValueView(
+                        label = "Attracting volts",
+                        value = reportJT.attractingVolts.meanData.toString(),
+                        color = Color.White
+                    )
+                    PrintValueView(
+                        label = "Releasing volts",
+                        value = reportJT.releasingVolts.meanData.toString(),
+                        color = Color.White
+                    )
+                    PrintValueView(
+                        label = "Brake resistance",
+                        value = reportJT.brakeResistance.measureData.toString(),
+                        color = Color.White
+                    )
 
-                ) {
-                    Column(Modifier.padding(10.dp)) {
+                    if (data.motorsMoveTimes.isNotEmpty())
                         PrintValueView(
-                            label = "Ось JT",
-                            value = (index + 1).toString(),
+                            label = "Время работы",
+                            value = data.motorsMoveTimes[index].toString(),
                             color = Color.White
                         )
+                    if (data.motorsMoveAngles.isNotEmpty())
                         PrintValueView(
-                            label = "Attracting volts",
-                            value = reportJT.attractingVolts.meanData.toString(),
+                            label = "Смещение",
+                            value = data.motorsMoveAngles[index].toString(),
                             color = Color.White
                         )
-                        PrintValueView(
-                            label = "Releasing volts",
-                            value = reportJT.releasingVolts.meanData.toString(),
-                            color = Color.White
-                        )
-                        PrintValueView(
-                            label = "Brake resistance",
-                            value = reportJT.brakeResistance.measureData.toString(),
-                            color = Color.White
-                        )
-
-                        if (data.motorsMoveTimes.isNotEmpty())
-                            PrintValueView(
-                                label = "Время работы",
-                                value = data.motorsMoveTimes[index].toString(),
-                                color = Color.White
-                            )
-                        if (data.motorsMoveAngles.isNotEmpty())
-                            PrintValueView(
-                                label = "Смещение",
-                                value = data.motorsMoveAngles[index].toString(),
-                                color = Color.White
-                            )
-                    }
                 }
             }
         }
     }
+
 }
 
 
@@ -162,14 +168,19 @@ private fun HeaderData(
     modifier: Modifier = Modifier,
     data: Data
 ) {
-    Column(modifier.padding(horizontal = 14.dp)) {
-        PrintValueView("Robot type", data.robotType)
-        PrintValueView("Serial number", data.serialNumber)
-        PrintValueView("Uptime controller", data.uptimeController.toString())
-        PrintValueView("Uptime servos", data.uptimeServo.toString())
-        PrintValueView("Motor on counter", data.motorOnCounter.toString())
-        PrintValueView("E-stop counter", data.eStopCounter.toString())
-        PrintValueView("Brake counter", data.brakeCounter.toString())
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(5.dp)
+    ) {
+        Column(modifier.padding(14.dp)) {
+            PrintValueView("Robot type", data.robotType)
+            PrintValueView("Serial number", data.serialNumber)
+            PrintValueView("Uptime controller", data.uptimeController.toString())
+            PrintValueView("Uptime servos", data.uptimeServo.toString())
+            PrintValueView("Motor on counter", data.motorOnCounter.toString())
+            PrintValueView("E-stop counter", data.eStopCounter.toString())
+            PrintValueView("Brake counter", data.brakeCounter.toString())
+        }
     }
 }
 
