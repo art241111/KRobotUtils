@@ -1,6 +1,5 @@
 package ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Shapes
 import androidx.compose.runtime.Composable
@@ -9,7 +8,7 @@ import androidx.compose.runtime.Composable
 @Composable
 fun AppTheme(
 //    darkTheme: Boolean = isSystemInDarkTheme(),
-    darkTheme: Boolean = true,
+    darkTheme: Boolean = false,
     content: @Composable() () -> Unit
 ) {
     val colors = if (darkTheme) {
