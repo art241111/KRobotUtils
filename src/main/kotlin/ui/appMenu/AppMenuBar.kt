@@ -28,7 +28,7 @@ fun AppMenuBar(
     hidePanel: () -> Unit
 ) {
     Column(
-        Modifier.background(MaterialTheme.colors.primaryVariant)
+        Modifier.background(MaterialTheme.colors.background)
             .fillMaxHeight()
             .width(IntrinsicSize.Max)
     ) {

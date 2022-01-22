@@ -36,6 +36,7 @@ fun MainWindow(
         MaterialTheme {
             Column() {
                 AppWindowTitleBar(
+                    titleText = "Robowizard",
                     onClose = onClose,
                     scope = scope,
                     menuStatus = isShowMenu

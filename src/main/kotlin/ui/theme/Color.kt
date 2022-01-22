@@ -13,14 +13,16 @@ val LightRed = Color(249, 245, 245)
 val LightGray = Color(243, 246, 244)
 internal val DarkColorPalette = darkColors(
     primary = Color.Black,
-    primaryVariant = Color.DarkGray,
+    primaryVariant = Color.LightGray,
     secondary = Color.White,
-    surface = Color.Gray
+    surface = Color.Gray,
+    background = Color.DarkGray
 )
 
 internal val LightColorPalette = lightColors(
     primary = Red700,
-    primaryVariant = LightRed,
+    primaryVariant = Red500,
     secondary = Color.Black,
-    surface = Color.White
+    surface = Color.White,
+    background = LightRed
 )

@@ -34,14 +34,17 @@ import windows.mainWindow.HeaderText
 
 @Composable
 fun WindowScope.AppWindowTitleBar(
+    titleText: String,
     onClose: () -> Unit,
     scope: FrameWindowScope,
-    menuStatus: MutableState<Boolean>
+    menuStatus: MutableState<Boolean>?
 ) = WindowDraggableArea {
     Column {
-        Box(Modifier.fillMaxWidth().height(48.dp).background(MaterialTheme.colors.primaryVariant)) {
-            Menu(Modifier.align(Alignment.CenterStart), menuStatus)
-            HeaderText(modifier = Modifier.align(Alignment.Center), text = "Robowizard", fontSize = 18.sp)
+        Box(Modifier.fillMaxWidth().height(48.dp).background(MaterialTheme.colors.background)) {
+            if (menuStatus != null) {
+                Menu(Modifier.align(Alignment.CenterStart), menuStatus)
+            }
+            HeaderText(modifier = Modifier.align(Alignment.Center), text = titleText, fontSize = 18.sp)
             TitleBatButtons(Modifier.align(Alignment.CenterEnd), onClose, scope)
         }
     }

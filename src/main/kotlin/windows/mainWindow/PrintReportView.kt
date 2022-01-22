@@ -42,7 +42,7 @@ fun PrintReportView(
     Box(
         Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colors.primaryVariant)
+            .background(MaterialTheme.colors.background)
     ) {
         LazyColumn(modifier.padding(20.dp)) {
             if (data.value != null) {
